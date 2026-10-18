@@ -1,5 +1,12 @@
 import { CATEGORIES } from '../../shared/cards.ts'
-import { ARENA_BONUS, HAND_SIZE, MAX_FIELD, START_LIFE, TURN_TIME_MS } from '../../shared/game.ts'
+import {
+  ARENA_BONUS,
+  HAND_SIZE,
+  MAX_FIELD,
+  MAX_TURNS,
+  START_LIFE,
+  TURN_TIME_MS,
+} from '../../shared/game.ts'
 import { CATEGORY_LABELS } from '../match/labels.ts'
 import './Rules.css'
 
@@ -17,6 +24,7 @@ export function Rules() {
           <li>zerar os {START_LIFE} pontos de vida do oponente, ou</li>
           <li>tiver na mão as 5 cartas especiais de um mesmo time.</li>
         </ul>
+        <p>A partida dura no máximo {MAX_TURNS} turnos. Ao final, vence quem tiver mais pontos de vida.</p>
       </section>
 
       <section>
@@ -83,15 +91,14 @@ export function Rules() {
           <li>Personagem com força ou resistência zerada sai da arena.</li>
           <li>O dano recebido continua nos turnos seguintes.</li>
           <li>
-            <strong>Dano excedente:</strong> o que sobrar do ataque passa para o personagem do oponente
-            com mais resistência (no empate, o que está há mais tempo na arena). Sem personagens na
-            arena, o dano vai para os pontos de vida.
+            <strong>Dano excedente:</strong> o que sobrar do ataque sai direto dos pontos de vida do
+            oponente.
           </li>
           <li>Se o oponente não tem personagens na arena, você ataca os pontos de vida diretamente.</li>
         </ul>
         <p className="rules-example">
           Exemplo: um personagem com força 10 ataca um com resistência 5. O alvo sai da arena, o
-          atacante fica com força 5, e os 5 pontos que sobraram atingem outro personagem do oponente.
+          atacante fica com força 5, e os 5 pontos que sobraram saem dos pontos de vida do oponente.
         </p>
       </section>
 
@@ -114,6 +121,9 @@ export function Rules() {
         <ul>
           <li>Os pontos de vida de um jogador chegam a zero.</li>
           <li>Um jogador reúne na mão as 5 cartas especiais de um time.</li>
+          <li>
+            Chega ao fim o turno {MAX_TURNS}: vence quem tem mais vida (vida igual é empate).
+          </li>
           <li>As cartas acabam para os dois: vence quem tem mais vida (vida igual é empate).</li>
           <li>
             Um jogador desiste ou fica desconectado por mais de 60 segundos: ele perde a partida.

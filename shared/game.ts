@@ -4,8 +4,10 @@ import type { Player } from './player.ts'
 export const HAND_SIZE = 5
 // A player with this many characters in the arena skips placing a card that turn.
 export const MAX_FIELD = 3
-export const START_LIFE = 50
+export const START_LIFE = 20
 export const TURN_TIME_MS = 60_000
+// After this many turns the player with more life wins.
+export const MAX_TURNS = 20
 // Bonus to attack and resistance for characters of the team an arena favors.
 export const ARENA_BONUS = 1
 
@@ -20,7 +22,13 @@ export type FieldCard = {
 /** 'choose': both players pick a card. 'attack': the attacker picks who attacks whom. */
 export type GamePhase = 'choose' | 'attack' | 'over'
 
-export type GameEndReason = 'life' | 'specials' | 'no-cards' | 'forfeit' | 'disconnect'
+export type GameEndReason =
+  | 'life'
+  | 'specials'
+  | 'no-cards'
+  | 'turn-limit'
+  | 'forfeit'
+  | 'disconnect'
 
 export type GameResult = {
   /** null on a draw. */

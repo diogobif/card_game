@@ -62,7 +62,7 @@ oxlint enforces `react/rules-of-hooks` (error) and `react/only-export-components
 - existem dois times, o time vermelho e o time azul, cada jogador deve escolher seu time, jogadores com mesmo time podem jogar uns contra os outros
 - o jogo vai consistir em um deck com 40 cartas de personagem, 20 cartas favorecendo cada lado, e 10 cartas de suporte, 5 favorecendo cada lado
 - as partidas vao acontecer em uma "arena" escolhida randomicamente, arenas podem ser neutras ou favorecer um lado, ao todo serao 5 arenas, uma neutra e 2 que favorecem um lado
-- a partida inicia com cada jogador recebendo 5 cartas de personagem aleatórias, uma carta de suporte e 50 pontos de vida
+- a partida inicia com cada jogador recebendo 5 cartas de personagem aleatórias, uma carta de suporte e 20 pontos de vida
 - cada carta de personagem tem um valor de forca que varia de 1 a 10, e uma pontuacao de resistencia que varia de 1 a 10 também, as cartas de suporte servem para adicionar mais poder ao seu personagem ou reduzir o poder do seu adversario
 - a cada turno cada jogador escolhe uma carta de personagem para o turno, os jogadores tem 1 minuto para escolher sua carta por turno
 - após escolher sua carta as cartas sao reveladas, a cada turno um jogador pode escolher qual personagem seu vai atacar o personagem do oponente, esse jogador muda a cada turno.
@@ -74,7 +74,7 @@ oxlint enforces `react/rules-of-hooks` (error) and `react/only-export-components
 - cada carta de personagem possui uma pontuacao de forca e de resitencia
 - todo personagem possui um tipo, e as cartas de suporte vao favorecer um tipo e desfavorecer outro, ela pode aumentar ou diminuir os pontos de ataque/defesa dos tipos específicos
 - cada vez que o meu personagem ataca outro personagem é reduzido dos pontos de resistencia dele o valor de forca do perasonagem que atacou, porém também é reduzido dos pontos de forca do meu personagem o valor da resistencia do que sofreu o ataque. Ex: se um personagem com forca 10 ataca um com resistencia 5 o ponto de forca dele pro próximo turno vai ser 5 e o personagem atacado some da arena
-- quando um personagem de forca 10 ataca um de resistencia 5, os 5 pontos restantes serao deduzidos de outro personagem que estiver na area, o personagem que possuir a maior pontuacao de resistencia, em caso de empate o personagem atacado vai ser o que está a mais tempo na arena, caso nao haja outro personagem para atacar esses 5 pontos vao ser deduzidos dos pontos de vida do jogador
+- quando um personagem de forca 10 ataca um de resistencia 5, os 5 pontos restantes serao deduzidos direto dos pontos de vida do jogador
 - haverao 5 cartas de cada lado com 1 ponto de forca e 1 ponto de resistencia, mas elas sao cartas especiais
 - vence a partida quem zerar os pontos de vida do inimigo ou conseguir as 5 cartas especiais do mesmo lado
 - a cada carta de personagem que o jogador utiliza ele recebe outra do deck, o jogador sempre vai ter 5 cartas na sua mao
@@ -88,6 +88,7 @@ oxlint enforces `react/rules-of-hooks` (error) and `react/only-export-components
 - if a player do not chooses a card in 60 seconds a random one from his hand will be chosen
 - each player can have at most 3 characters in the arena; with 3 in the arena the player does not play a character that turn (keeps the hand) until one leaves
 - if both players run out of cards (empty deck and empty hands) the player with more life points wins; equal life is a draw
+- the match lasts at most 20 turns; after turn 20 the player with more life points wins; equal life is a draw
 
 # roadmap
 

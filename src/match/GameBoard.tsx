@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { MAX_FIELD, type GameView } from '../../shared/game.ts'
+import { MAX_FIELD, MAX_TURNS, type GameView } from '../../shared/game.ts'
 import type { Team } from '../../shared/player.ts'
 import type { ClientMessage } from '../../shared/protocol.ts'
 import { TeamBadge } from '../components/TeamBadge.tsx'
@@ -82,7 +82,9 @@ export function GameBoard({ game, send }: Props) {
           )}
         </div>
         <div className="board-top-stats">
-          <span>Turno {game.turn}</span>
+          <span>
+            Turno {game.turn}/{MAX_TURNS}
+          </span>
           <span>Baralho: {game.deckCount}</span>
         </div>
       </header>

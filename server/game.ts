@@ -11,6 +11,7 @@ import {
   ARENA_BONUS,
   HAND_SIZE,
   MAX_FIELD,
+  MAX_TURNS,
   START_LIFE,
   TURN_TIME_MS,
   type FieldCard,
@@ -147,19 +148,11 @@ export function attack(
     if (power - guard > 0) attacker.attack = afterHit(attacker.attack, atkMod, guard)
     else removeFromField(game, me, attacker)
 
-    let leftover = hitCard(game, foe, target, resMod, guard, power)
-    // Leftover damage hits the toughest remaining character (oldest on ties), then life points.
-    while (leftover > 0) {
-      const next = toughest(game, foe)
-      if (!next) {
-        damageLife(foe, leftover)
-        addLog(game, `${leftover} de dano excedente em ${foe.player.name}.`)
-        break
-      }
-      const mod = modifier(game, foe, next, 'resistance')
-      const res = Math.max(0, next.resistance + mod)
-      addLog(game, `${leftover} de dano excedente em ${next.card.name}.`)
-      leftover = hitCard(game, foe, next, mod, res, leftover)
+    // Leftover damage goes straight to the defending player's life points.
+    const leftover = hitCard(game, foe, target, resMod, guard, power)
+    if (leftover > 0) {
+      damageLife(foe, leftover)
+      addLog(game, `${leftover} de dano excedente em ${foe.player.name}.`)
     }
   }
 
@@ -194,20 +187,6 @@ function removeFromField(game: Game, owner: PlayerState, card: FieldCard) {
   addLog(game, `${card.card.name} saiu da arena.`)
 }
 
-function toughest(game: Game, owner: PlayerState): FieldCard | undefined {
-  let best: FieldCard | undefined
-  let bestRes = -Infinity
-  for (const f of owner.field) {
-    const res = f.resistance + modifier(game, owner, f, 'resistance')
-    // Field order is placement order, so strict > keeps the oldest on ties.
-    if (res > bestRes) {
-      best = f
-      bestRes = res
-    }
-  }
-  return best
-}
-
 /** This turn's support bonus: the owner's boosts plus the opponent's reductions. */
 function modifier(game: Game, owner: PlayerState, card: FieldCard, stat: Stat): number {
   let total = 0
@@ -227,9 +206,16 @@ function damageLife(p: PlayerState, amount: number) {
 
 function startChoosePhase(game: Game) {
   const [a, b] = game.players
-  if (a.hand.length === 0 && b.hand.length === 0) {
+  // Both endings below go to whoever has more life; equal life is a draw.
+  const reason =
+    game.turn >= MAX_TURNS
+      ? 'turn-limit'
+      : a.hand.length === 0 && b.hand.length === 0
+        ? 'no-cards'
+        : null
+  if (reason) {
     const winnerId = a.life === b.life ? null : a.life > b.life ? a.player.id : b.player.id
-    endGame(game, { winnerId, reason: 'no-cards' })
+    endGame(game, { winnerId, reason })
     return
   }
   game.turn++
