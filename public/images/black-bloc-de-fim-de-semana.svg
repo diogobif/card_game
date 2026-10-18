@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336">
+<defs>
+<pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#000" fill-opacity=".07"/></pattern>
+<pattern id="plaid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#c0392b"/><rect width="24" height="8" fill="#2c3e50" fill-opacity=".6"/><rect width="8" height="24" fill="#2c3e50" fill-opacity=".6"/><rect x="16" width="2" height="24" fill="#fff" fill-opacity=".4"/></pattern>
+<linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5e8a"/><stop offset=".25" stop-color="#ffb347"/><stop offset=".5" stop-color="#ffe066"/><stop offset=".75" stop-color="#5fd38d"/><stop offset="1" stop-color="#5a8dee"/></linearGradient>
+</defs>
+<rect width="240" height="336" fill="#f9d2d2"/>
+<circle cx="120" cy="150" r="104" fill="#fff0f0" fill-opacity=".8"/>
+<rect width="240" height="336" fill="url(#dots)"/>
+<g stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M196,66 L164,26 M196,66 L236,30 M196,66 L232,96 M196,66 L172,104 M196,66 L240,66 M196,66 L200,12" stroke="#7f8c8d" stroke-width="2"/><path d="M182,48 L212,46 L220,78 L188,86 Z" fill="none" stroke="#7f8c8d" stroke-width="1.5"/>
+<path d="M62,150 C56,62 184,62 178,150 L176,206 L64,206 Z" fill="#1c1c1c"/>
+<path d="M38,336 L38,262 C38,224 72,202 120,202 C168,202 202,224 202,262 L202,336 Z" fill="#1c1c1c"/>
+
+<rect x="106" y="166" width="28" height="44" rx="6" fill="#f6d5b8"/>
+<path d="M108,196 Q120,204 132,196" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="6"/>
+<path d="M84,206 C90,232 150,232 156,206" fill="#000" fill-opacity=".35"/><path d="M108,226 L106,260 M132,226 L134,260" fill="none" stroke="#eee" stroke-width="3"/><path d="M84,300 L156,300 L148,336 L92,336 Z" fill="#000" fill-opacity=".15" stroke-width="2"/>
+
+<circle cx="76" cy="134" r="10" fill="#f6d5b8"/><circle cx="164" cy="134" r="10" fill="#f6d5b8"/><ellipse cx="120" cy="130" rx="44" ry="50" fill="#f6d5b8"/><ellipse cx="103" cy="128" rx="7" ry="8" fill="#fff" stroke-width="2"/><circle cx="104" cy="131" r="3.5" fill="#222" stroke="none"/><ellipse cx="137" cy="128" rx="7" ry="8" fill="#fff" stroke-width="2"/><circle cx="138" cy="131" r="3.5" fill="#222" stroke="none"/><path d="M92,110 L113,119 M127,119 L148,110" stroke="#4a3424" stroke-width="4.5"/><path d="M120,136 Q112,150 123,151" fill="none" stroke-width="2.5"/>
+
+
+
+
+<path d="M74,138 L166,138 C166,178 146,186 120,186 C94,186 74,178 74,138 Z" fill="#111"/><path d="M76,104 C82,74 158,74 164,104 C164,90 150,72 120,70 C90,72 76,90 76,104 Z" fill="#1c1c1c"/>
+<path d="M70,244 Q41,260 48,232" fill="none" stroke="#222" stroke-width="27"/><path d="M70,244 Q41,260 48,232" fill="none" stroke="#1c1c1c" stroke-width="21"/>
+<rect x="20" y="240" width="56" height="38" rx="6" fill="#ffb6c8"/><rect x="34" y="232" width="28" height="10" rx="4" fill="none" stroke-width="3"/><text x="48" y="258" font-size="7" fill="#222" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">MARMITA</text><text x="48" y="270" font-size="7" fill="#c2185b" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">DA VÓ ♥</text>
+<circle cx="48" cy="232" r="11" fill="#f6d5b8"/>
+
+</g></svg>

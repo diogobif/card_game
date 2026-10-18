@@ -1,0 +1,121 @@
+:root {
+  --text: #4b4654;
+  --text-h: #0f0d14;
+  --bg: #f6f5f8;
+  --surface: #ffffff;
+  --border: #dedbe3;
+  --error: #c62828;
+  --team-red: #c62828;
+  --team-red-bg: rgba(198, 40, 40, 0.1);
+  --team-blue: #1d5fd1;
+  --team-blue-bg: rgba(29, 95, 209, 0.1);
+  --shadow: rgba(0, 0, 0, 0.08) 0 10px 20px -6px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  font: 16px/1.5 var(--sans);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #b4b0bd;
+    --text-h: #f3f2f6;
+    --bg: #121117;
+    --surface: #1c1b23;
+    --border: #2f2d38;
+    --error: #ff6b6b;
+    --team-red: #ff6b6b;
+    --team-red-bg: rgba(255, 107, 107, 0.12);
+    --team-blue: #6ea2ff;
+    --team-blue-bg: rgba(110, 162, 255, 0.12);
+    --shadow: rgba(0, 0, 0, 0.4) 0 10px 20px -6px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--text-h);
+}
+
+.panel {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.panel h1,
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+
+.panel p {
+  margin: 0 0 12px;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 8px 16px;
+  font: inherit;
+  font-weight: 600;
+  border: 1px solid var(--text-h);
+  border-radius: 8px;
+  background: var(--text-h);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-h);
+  border-color: var(--border);
+}
+
+.team-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.team-badge-red {
+  color: var(--team-red);
+  background: var(--team-red-bg);
+}
+
+.team-badge-blue {
+  color: var(--team-blue);
+  background: var(--team-blue-bg);
+}
+
+.match-players {
+  padding-left: 20px;
+}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336">
+<defs>
+<pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#000" fill-opacity=".07"/></pattern>
+<pattern id="plaid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#c0392b"/><rect width="24" height="8" fill="#2c3e50" fill-opacity=".6"/><rect width="8" height="24" fill="#2c3e50" fill-opacity=".6"/><rect x="16" width="2" height="24" fill="#fff" fill-opacity=".4"/></pattern>
+<linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5e8a"/><stop offset=".25" stop-color="#ffb347"/><stop offset=".5" stop-color="#ffe066"/><stop offset=".75" stop-color="#5fd38d"/><stop offset="1" stop-color="#5a8dee"/></linearGradient>
+</defs>
+<rect width="240" height="336" fill="#f9d2d2"/>
+<circle cx="120" cy="150" r="104" fill="#fff0f0" fill-opacity=".8"/>
+<rect width="240" height="336" fill="url(#dots)"/>
+<g stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M178,14 L190,36 L214,26 L208,50 L234,58 L210,70 L222,92 L196,84 L186,106 L176,84 L152,90 L162,68 L140,56 L164,48 L158,24 Z" fill="#ffe066"/><text x="187" y="64" font-size="11" fill="#c2185b" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">LACROU!</text>
+
+<path d="M38,336 L38,262 C38,224 72,202 120,202 C168,202 202,224 202,262 L202,336 Z" fill="#5aa65a"/>
+<circle cx="120" cy="68" r="13" fill="#5a3a22"/>
+<rect x="106" y="166" width="28" height="44" rx="6" fill="#e8b88f"/>
+<path d="M108,196 Q120,204 132,196" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="6"/>
+<path d="M104,203 Q120,220 136,203" fill="none"/>
+<path d="M120,288 Q100,268 120,248 Q140,268 120,288 Z M120,288 L120,252" fill="#a5e0a5"/>
+<circle cx="76" cy="134" r="10" fill="#e8b88f"/><circle cx="164" cy="134" r="10" fill="#e8b88f"/><ellipse cx="120" cy="130" rx="44" ry="50" fill="#e8b88f"/><ellipse cx="103" cy="128" rx="7" ry="8" fill="#fff" stroke-width="2"/><circle cx="104" cy="131" r="3.5" fill="#222" stroke="none"/><ellipse cx="137" cy="128" rx="7" ry="8" fill="#fff" stroke-width="2"/><circle cx="138" cy="131" r="3.5" fill="#222" stroke="none"/><rect x="94" y="118" width="18" height="10" fill="#e8b88f" stroke="none"/><rect x="128" y="118" width="18" height="10" fill="#e8b88f" stroke="none"/><path d="M95,128 L111,128 M129,128 L145,128" stroke-width="2.5"/><path d="M93,115 Q103,111 113,115 M127,115 Q137,111 147,115" fill="none" stroke="#4a3424" stroke-width="4"/><path d="M120,136 Q112,150 123,151" fill="none" stroke-width="2.5"/><path d="M105,163 Q123,168 137,156" fill="none"/>
+<path d="M76,132 C76,178 98,192 120,192 C142,192 164,178 164,132 C162,152 154,170 140,172 C132,168 108,168 100,172 C86,170 78,152 76,132 Z" fill="#5a3a22"/><path d="M100,153 C108,146 116,148 120,151 C124,148 132,146 140,153 C134,159 126,157 120,155 C114,157 106,159 100,153 Z" fill="#5a3a22"/>
+<path d="M76,128 C70,84 98,72 120,72 C144,72 172,84 164,128 C158,104 142,94 120,94 C98,94 82,104 76,128 Z" fill="#5a3a22"/>
+
+
+
+<path d="M170,244 Q197,242 176,196" fill="none" stroke="#222" stroke-width="27"/><path d="M170,244 Q197,242 176,196" fill="none" stroke="#5aa65a" stroke-width="21"/>
+<path d="M158,164 C164,158 172,160 174,166 L196,222 C196,226 192,228 190,226 Z" fill="#ff8c1a"/><path d="M162,166 L170,162 M166,180 L174,176 M172,194 L180,190" stroke-width="1.5"/><path d="M162,162 Q150,144 156,136 M164,160 Q164,140 174,136 M166,162 Q176,148 186,150" fill="none" stroke="#2e7d32" stroke-width="4"/>
+<circle cx="176" cy="196" r="11" fill="#e8b88f"/>
+
+</g></svg>

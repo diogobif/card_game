@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336">
+<defs>
+<pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#000" fill-opacity=".07"/></pattern>
+<pattern id="plaid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#c0392b"/><rect width="24" height="8" fill="#2c3e50" fill-opacity=".6"/><rect width="8" height="24" fill="#2c3e50" fill-opacity=".6"/><rect x="16" width="2" height="24" fill="#fff" fill-opacity=".4"/></pattern>
+<linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5e8a"/><stop offset=".25" stop-color="#ffb347"/><stop offset=".5" stop-color="#ffe066"/><stop offset=".75" stop-color="#5fd38d"/><stop offset="1" stop-color="#5a8dee"/></linearGradient>
+</defs>
+<rect width="240" height="336" fill="#cfe0fb"/>
+<circle cx="120" cy="150" r="104" fill="#eef4ff" fill-opacity=".8"/>
+<rect width="240" height="336" fill="url(#dots)"/>
+<g stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<ellipse cx="52" cy="44" rx="46" ry="24" fill="#fff"/><circle cx="84.19999999999999" cy="76" r="6" fill="#fff"/><circle cx="95.69999999999999" cy="88" r="4" fill="#fff"/><text x="52" y="41.32" font-size="12" fill="#222" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">no meu</text><text x="52" y="55.32" font-size="12" fill="#222" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">tempo...</text>
+
+<path d="M38,336 L38,262 C38,224 72,202 120,202 C168,202 202,224 202,262 L202,336 Z" fill="#6b7b3a"/>
+
+<rect x="106" y="166" width="28" height="44" rx="6" fill="#f6d5b8"/>
+<path d="M108,196 Q120,204 132,196" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="6"/>
+<path d="M104,203 L120,222 L136,203" fill="none"/><rect x="60" y="250" width="34" height="26" rx="3" fill="none" stroke-width="2.5"/><rect x="146" y="250" width="34" height="26" rx="3" fill="none" stroke-width="2.5"/><rect x="60" y="250" width="34" height="8" fill="#00000022" stroke-width="2"/><rect x="62" y="232" width="10" height="7" fill="#c0392b" stroke-width="1.5"/><circle cx="67" cy="244" r="4.5" fill="#f5c542" stroke-width="1.5"/><rect x="74" y="232" width="10" height="7" fill="#2980b9" stroke-width="1.5"/><circle cx="79" cy="244" r="4.5" fill="#f5c542" stroke-width="1.5"/><rect x="86" y="232" width="10" height="7" fill="#f1c40f" stroke-width="1.5"/><circle cx="91" cy="244" r="4.5" fill="#f5c542" stroke-width="1.5"/>
+
+<circle cx="76" cy="134" r="10" fill="#f6d5b8"/><circle cx="164" cy="134" r="10" fill="#f6d5b8"/><ellipse cx="120" cy="130" rx="44" ry="50" fill="#f6d5b8"/><path d="M95,132 Q103,123 111,132 M129,132 Q137,123 145,132" fill="none" stroke-width="3.5"/><path d="M93,114 Q103,109 113,114 M127,114 Q137,109 147,114" fill="none" stroke="#4a3424" stroke-width="4"/><path d="M120,136 Q112,150 123,151" fill="none" stroke-width="2.5"/><path d="M106,161 Q120,173 134,161" fill="none"/>
+<path d="M96,154 C104,142 116,146 120,149 C124,146 136,142 144,154 C138,162 128,160 120,156 C112,160 102,162 96,154 Z" fill="#f0f0f0"/>
+<path d="M76,128 C70,84 98,72 120,72 C144,72 172,84 164,128 C158,104 142,94 120,94 C98,94 82,104 76,128 Z" fill="#f0f0f0"/>
+<path d="M78,106 C70,72 170,72 162,106 Z" fill="#55632c"/><rect x="78" y="98" width="84" height="10" fill="#2e3518"/><path d="M80,108 Q120,128 160,108 L160,112 Q120,134 80,112 Z" fill="#111"/><polygon points="120.0,80.0 122.1,85.1 127.6,85.5 123.4,89.1 124.7,94.5 120.0,91.6 115.3,94.5 116.6,89.1 112.4,85.5 117.9,85.1" fill="#f5c542"/>
+
+
+<path d="M170,244 Q199,262 188,236" fill="none" stroke="#222" stroke-width="27"/><path d="M170,244 Q199,262 188,236" fill="none" stroke="#6b7b3a" stroke-width="21"/>
+<g transform="rotate(10 188 210)"><rect x="166" y="178" width="44" height="52" fill="#7a5230"/><rect x="172" y="184" width="32" height="40" fill="#d9c39a" stroke-width="2"/><circle cx="188" cy="198" r="6" fill="#a68a5b" stroke-width="1.5"/><path d="M180,222 Q188,206 196,222" fill="#a68a5b" stroke-width="1.5"/></g>
+<circle cx="188" cy="236" r="11" fill="#f6d5b8"/>
+
+</g></svg>

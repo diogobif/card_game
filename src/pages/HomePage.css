@@ -1,0 +1,98 @@
+.home {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.home-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  overflow-wrap: anywhere;
+}
+
+.home-status,
+.home-notice {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.home-status {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.home-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.home-row:first-child {
+  border-top: 0;
+}
+
+.home-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.home-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.home-tag {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.home-link {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.home-link input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.home-waiting {
+  font-style: italic;
+}

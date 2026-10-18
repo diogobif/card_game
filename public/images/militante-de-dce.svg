@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336">
+<defs>
+<pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#000" fill-opacity=".07"/></pattern>
+<pattern id="plaid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#c0392b"/><rect width="24" height="8" fill="#2c3e50" fill-opacity=".6"/><rect width="8" height="24" fill="#2c3e50" fill-opacity=".6"/><rect x="16" width="2" height="24" fill="#fff" fill-opacity=".4"/></pattern>
+<linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5e8a"/><stop offset=".25" stop-color="#ffb347"/><stop offset=".5" stop-color="#ffe066"/><stop offset=".75" stop-color="#5fd38d"/><stop offset="1" stop-color="#5a8dee"/></linearGradient>
+</defs>
+<rect width="240" height="336" fill="#f9d2d2"/>
+<circle cx="120" cy="150" r="104" fill="#fff0f0" fill-opacity=".8"/>
+<rect width="240" height="336" fill="url(#dots)"/>
+<g stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+
+
+<path d="M38,336 L38,262 C38,224 72,202 120,202 C168,202 202,224 202,262 L202,336 Z" fill="#d32f2f"/>
+<circle cx="180" cy="104" r="18" fill="#2b2118"/><circle cx="175" cy="125" r="18" fill="#2b2118"/><circle cx="162" cy="142" r="18" fill="#2b2118"/><circle cx="143" cy="154" r="18" fill="#2b2118"/><circle cx="120" cy="158" r="18" fill="#2b2118"/><circle cx="97" cy="154" r="18" fill="#2b2118"/><circle cx="78" cy="142" r="18" fill="#2b2118"/><circle cx="65" cy="125" r="18" fill="#2b2118"/><circle cx="60" cy="104" r="18" fill="#2b2118"/><circle cx="65" cy="83" r="18" fill="#2b2118"/><circle cx="78" cy="66" r="18" fill="#2b2118"/><circle cx="97" cy="54" r="18" fill="#2b2118"/><circle cx="120" cy="50" r="18" fill="#2b2118"/><circle cx="143" cy="54" r="18" fill="#2b2118"/><circle cx="162" cy="66" r="18" fill="#2b2118"/><circle cx="175" cy="83" r="18" fill="#2b2118"/><ellipse cx="120" cy="104" rx="62" ry="56" fill="#2b2118" stroke="none"/>
+<rect x="106" y="166" width="28" height="44" rx="6" fill="#6b4228"/>
+<path d="M108,196 Q120,204 132,196" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="6"/>
+<path d="M104,203 Q120,220 136,203" fill="none"/>
+
+<circle cx="76" cy="134" r="10" fill="#6b4228"/><circle cx="164" cy="134" r="10" fill="#6b4228"/><ellipse cx="120" cy="130" rx="44" ry="50" fill="#6b4228"/><ellipse cx="103" cy="128" rx="7" ry="8" fill="#fff" stroke-width="2"/><circle cx="104" cy="131" r="3.5" fill="#222" stroke="none"/><ellipse cx="137" cy="128" rx="7" ry="8" fill="#fff" stroke-width="2"/><circle cx="138" cy="131" r="3.5" fill="#222" stroke="none"/><path d="M92,110 L113,119 M127,119 L148,110" stroke="#2b2118" stroke-width="4.5"/><path d="M120,136 Q112,150 123,151" fill="none" stroke-width="2.5"/><ellipse cx="120" cy="166" rx="12" ry="11" fill="#5a1a1a"/><ellipse cx="120" cy="172" rx="7" ry="3.5" fill="#e0606a" stroke="none"/>
+
+<path d="M78,118 C80,90 100,84 120,86 C140,84 160,90 162,118 C150,100 90,100 78,118 Z" fill="#2b2118"/>
+
+
+
+<path d="M170,244 Q197,241 174,194" fill="none" stroke="#222" stroke-width="27"/><path d="M170,244 Q197,241 174,194" fill="none" stroke="#d32f2f" stroke-width="21"/>
+<path d="M70,244 Q41,253 52,218" fill="none" stroke="#222" stroke-width="27"/><path d="M70,244 Q41,253 52,218" fill="none" stroke="#d32f2f" stroke-width="21"/>
+<path d="M146,160 L210,136 L210,198 L146,174 Z" fill="#f2f2f2"/><ellipse cx="210" cy="167" rx="7" ry="31" fill="#ddd"/><rect x="166" y="174" width="10" height="20" fill="#555" stroke-width="2"/><path d="M220,150 L232,144 M222,168 L236,168 M220,186 L232,192" stroke-width="2.5"/><path d="M52,224 L44,98" stroke="#7a5230" stroke-width="5"/><rect x="2" y="50" width="84" height="48" rx="3" fill="#fff8d6"/><text x="44.0" y="71.6" font-size="10" fill="#222" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">ASSEMBLEIA</text><text x="44.0" y="83.6" font-size="10" fill="#222" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">(6 HORAS)</text>
+<circle cx="174" cy="194" r="11" fill="#6b4228"/>
+<circle cx="52" cy="218" r="11" fill="#6b4228"/>
+
+</g></svg>

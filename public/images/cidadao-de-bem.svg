@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336">
+<defs>
+<pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#000" fill-opacity=".07"/></pattern>
+<pattern id="plaid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#c0392b"/><rect width="24" height="8" fill="#2c3e50" fill-opacity=".6"/><rect width="8" height="24" fill="#2c3e50" fill-opacity=".6"/><rect x="16" width="2" height="24" fill="#fff" fill-opacity=".4"/></pattern>
+<linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5e8a"/><stop offset=".25" stop-color="#ffb347"/><stop offset=".5" stop-color="#ffe066"/><stop offset=".75" stop-color="#5fd38d"/><stop offset="1" stop-color="#5a8dee"/></linearGradient>
+</defs>
+<rect width="240" height="336" fill="#cfe0fb"/>
+<circle cx="120" cy="150" r="104" fill="#eef4ff" fill-opacity=".8"/>
+<rect width="240" height="336" fill="url(#dots)"/>
+<g stroke="#222" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M38,80 L38,200" stroke="#777" stroke-width="5"/><rect x="8" y="20" width="60" height="62" rx="4" fill="#1e5bb8"/><text x="38" y="44" font-size="13" fill="#fff" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">VAGA</text><text x="38" y="62" font-size="13" fill="#fff" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">IDOSO</text>
+
+<path d="M38,336 L38,262 C38,224 72,202 120,202 C168,202 202,224 202,262 L202,336 Z" fill="#ffffff"/>
+
+<rect x="106" y="166" width="28" height="44" rx="6" fill="#9c6640"/>
+<path d="M108,196 Q120,204 132,196" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="6"/>
+<path d="M102,202 L110,224 L120,208 Z" fill="#e8f5e9"/><path d="M138,202 L130,224 L120,208 Z" fill="#e8f5e9"/><path d="M120,208 L120,236" fill="none" stroke-width="2"/><circle cx="120" cy="220" r="2" fill="#333"/><circle cx="120" cy="230" r="2" fill="#333"/>
+<rect x="140" y="228" width="16" height="11" fill="#1f9e48" stroke-width="1.5"/><path d="M148,229 L155,233.5 L148,238 L141,233.5 Z" fill="#ffd400" stroke="none"/>
+<circle cx="76" cy="134" r="10" fill="#9c6640"/><circle cx="164" cy="134" r="10" fill="#9c6640"/><ellipse cx="120" cy="130" rx="44" ry="50" fill="#9c6640"/><path d="M95,132 Q103,123 111,132 M129,132 Q137,123 145,132" fill="none" stroke-width="3.5"/><path d="M93,114 Q103,109 113,114 M127,114 Q137,109 147,114" fill="none" stroke="#2b2118" stroke-width="4"/><path d="M120,136 Q112,150 123,151" fill="none" stroke-width="2.5"/><path d="M106,161 Q120,173 134,161" fill="none"/>
+
+<path d="M76,128 C70,84 98,72 120,72 C144,72 172,84 164,128 C158,104 142,94 120,94 C98,94 82,104 76,128 Z" fill="#2b2118"/>
+<ellipse cx="120" cy="60" rx="34" ry="8" fill="none" stroke="#f5c542" stroke-width="6"/>
+
+
+<path d="M170,244 Q199,262 188,236" fill="none" stroke="#222" stroke-width="27"/><path d="M170,244 Q199,262 188,236" fill="none" stroke="#ffffff" stroke-width="21"/>
+<g transform="rotate(8 188 210)"><rect x="166" y="174" width="44" height="58" fill="#fff8d6"/><text x="188" y="190" font-size="11" fill="#c0392b" stroke="none" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold">MULTA</text><path d="M172,200 L204,200 M172,208 L204,208 M172,216 L196,216" stroke-width="1.5"/></g>
+<circle cx="188" cy="236" r="11" fill="#9c6640"/>
+
+</g></svg>

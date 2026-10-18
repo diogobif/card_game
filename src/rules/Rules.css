@@ -1,0 +1,30 @@
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rules section h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+
+.rules p {
+  margin: 0 0 6px;
+}
+
+.rules ul,
+.rules ol {
+  margin: 0 0 6px;
+  padding-left: 22px;
+}
+
+.rules li + li {
+  margin-top: 4px;
+}
+
+.rules-example {
+  padding: 10px 12px;
+  border-left: 3px solid var(--border);
+  font-style: italic;
+}

@@ -1,0 +1,138 @@
+.login {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.login-card h1 {
+  margin: 0;
+  text-align: center;
+}
+
+.login-subtitle {
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.login-field input {
+  font: inherit;
+  font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.login-field input[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+.login-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.login-teams legend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.team-option {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 20px 8px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.team-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.team-option:has(input:focus-visible) {
+  outline: 2px solid var(--text-h);
+  outline-offset: 2px;
+}
+
+.team-red {
+  color: var(--team-red);
+}
+
+.team-blue {
+  color: var(--team-blue);
+}
+
+.team-red:has(input:checked) {
+  border-color: var(--team-red);
+  background: var(--team-red-bg);
+}
+
+.team-blue:has(input:checked) {
+  border-color: var(--team-blue);
+  background: var(--team-blue-bg);
+}
+
+.login-error {
+  margin: -4px 0 0;
+  font-size: 0.85em;
+  color: var(--error);
+}
+
+.login-submit {
+  margin-top: 12px;
+  padding: 12px;
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 8px;
+  background: var(--text-h);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.login-rules {
+  text-align: center;
+  color: var(--text-h);
+}
+
+.login-submit:hover {
+  opacity: 0.9;
+}

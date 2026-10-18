@@ -1,0 +1,259 @@
+.board {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.board-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.board-top-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.board-timer {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.board-timer.is-low {
+  color: var(--error);
+}
+
+.board-tag {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.board-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 -16px -48px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 -6px 16px -8px rgba(0, 0, 0, 0.2);
+}
+
+.board-status {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.board-dock .btn {
+  flex-shrink: 0;
+}
+
+.board-note {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+}
+
+.board-result {
+  text-align: center;
+}
+
+.board-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+.board-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.board-life {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.board-extra {
+  font-size: 0.9rem;
+}
+
+.board-field {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.board-empty {
+  margin: 0;
+  padding: 24px 0;
+  font-style: italic;
+}
+
+.board-supports h3,
+.board-hand h2,
+.board-log h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.board-support-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+}
+
+.board-log ol {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.9rem;
+}
+
+.board-rules summary {
+  font-weight: 700;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.board-rules[open] summary {
+  margin-bottom: 12px;
+}
+
+.board-leave {
+  align-self: flex-start;
+}
+
+.game-card {
+  width: 128px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+}
+
+.game-card-red {
+  border-color: var(--team-red);
+}
+
+.game-card-blue {
+  border-color: var(--team-blue);
+}
+
+.game-card-support {
+  width: 160px;
+  border-style: dashed;
+}
+
+button.game-card {
+  cursor: pointer;
+}
+
+button.game-card:hover {
+  transform: translateY(-2px);
+}
+
+.game-card.is-selected {
+  outline: 3px solid var(--text-h);
+  outline-offset: 2px;
+}
+
+.game-card img {
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--border);
+}
+
+.game-card-support img {
+  aspect-ratio: 16 / 9;
+}
+
+.game-card-name {
+  font-weight: 700;
+  color: var(--text-h);
+  line-height: 1.2;
+}
+
+.game-card-stats {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.stat-up {
+  color: #2e7d32;
+}
+
+.stat-down {
+  color: var(--error);
+}
+
+@media (prefers-color-scheme: dark) {
+  .stat-up {
+    color: #6fcf73;
+  }
+}
+
+/* Phones: each card row scrolls sideways instead of wrapping into a tall grid. */
+@media (max-width: 640px) {
+  .board-field {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    /* Room for the selection outline, which overflow would otherwise clip. */
+    padding: 6px;
+    margin: -6px;
+  }
+
+  .board-field > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .game-card {
+    width: 104px;
+    font-size: 0.75rem;
+  }
+
+  .game-card-support {
+    width: 132px;
+  }
+
+  .board-side {
+    padding: 10px;
+  }
+
+  .board-top {
+    padding: 12px 16px;
+  }
+}

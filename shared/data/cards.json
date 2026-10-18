@@ -1,0 +1,598 @@
+{
+  "characters": [
+    {
+      "id": "pastor-corrupto",
+      "name": "Pastor Corrupto",
+      "category": "religioso",
+      "team": "blue",
+      "attack": 4,
+      "resistance": 7,
+      "special": true,
+      "image": "/images/pastor-corrupto.svg"
+    },
+    {
+      "id": "tio-do-zap",
+      "name": "Tio do Zap",
+      "category": "influenciador",
+      "team": "blue",
+      "attack": 3,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/tio-do-zap.svg"
+    },
+    {
+      "id": "patriota-de-acampamento",
+      "name": "Patriota de Acampamento",
+      "category": "militante",
+      "team": "blue",
+      "attack": 2,
+      "resistance": 9,
+      "special": false,
+      "image": "/images/patriota-de-acampamento.svg"
+    },
+    {
+      "id": "agroboy-de-hilux",
+      "name": "Agroboy de Hilux",
+      "category": "empresario",
+      "team": "blue",
+      "attack": 5,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/agroboy-de-hilux.svg"
+    },
+    {
+      "id": "ancap-de-twitter",
+      "name": "Ancap de Twitter",
+      "category": "influenciador",
+      "team": "blue",
+      "attack": 4,
+      "resistance": 4,
+      "special": false,
+      "image": "/images/ancap-de-twitter.svg"
+    },
+    {
+      "id": "saudosista-da-ditadura",
+      "name": "Saudosista da Ditadura",
+      "category": "militar",
+      "team": "blue",
+      "attack": 5,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/saudosista-da-ditadura.svg"
+    },
+    {
+      "id": "filosofo-de-youtube",
+      "name": "Filósofo de YouTube",
+      "category": "intelectual",
+      "team": "blue",
+      "attack": 4,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/filosofo-de-youtube.svg"
+    },
+    {
+      "id": "empresario-do-estado-minimo",
+      "name": "Empresário do Estado Mínimo",
+      "category": "empresario",
+      "team": "blue",
+      "attack": 6,
+      "resistance": 6,
+      "special": true,
+      "image": "/images/empresario-do-estado-minimo.svg"
+    },
+    {
+      "id": "herdeiro-meritocrata",
+      "name": "Herdeiro Meritocrata",
+      "category": "empresario",
+      "team": "blue",
+      "attack": 3,
+      "resistance": 8,
+      "special": false,
+      "image": "/images/herdeiro-meritocrata.svg"
+    },
+    {
+      "id": "senhora-da-panela-gourmet",
+      "name": "Senhora da Panela Gourmet",
+      "category": "militante",
+      "team": "blue",
+      "attack": 2,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/senhora-da-panela-gourmet.svg"
+    },
+    {
+      "id": "faria-limer-de-colete",
+      "name": "Faria Limer de Colete",
+      "category": "empresario",
+      "team": "blue",
+      "attack": 5,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/faria-limer-de-colete.svg"
+    },
+    {
+      "id": "monarquista-de-instagram",
+      "name": "Monarquista de Instagram",
+      "category": "influenciador",
+      "team": "blue",
+      "attack": 2,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/monarquista-de-instagram.svg"
+    },
+    {
+      "id": "deputado-da-bancada-da-bala",
+      "name": "Deputado da Bancada da Bala",
+      "category": "politico",
+      "team": "blue",
+      "attack": 7,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/deputado-da-bancada-da-bala.svg"
+    },
+    {
+      "id": "coronel-do-interior",
+      "name": "Coronel do Interior",
+      "category": "politico",
+      "team": "blue",
+      "attack": 6,
+      "resistance": 8,
+      "special": true,
+      "image": "/images/coronel-do-interior.svg"
+    },
+    {
+      "id": "medico-do-tratamento-milagroso",
+      "name": "Médico do Tratamento Milagroso",
+      "category": "intelectual",
+      "team": "blue",
+      "attack": 4,
+      "resistance": 4,
+      "special": false,
+      "image": "/images/medico-do-tratamento-milagroso.svg"
+    },
+    {
+      "id": "influencer-bela-e-recatada",
+      "name": "Influencer Bela e Recatada",
+      "category": "influenciador",
+      "team": "blue",
+      "attack": 4,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/influencer-bela-e-recatada.svg"
+    },
+    {
+      "id": "gamer-anti-woke",
+      "name": "Gamer Anti-Woke",
+      "category": "influenciador",
+      "team": "blue",
+      "attack": 3,
+      "resistance": 4,
+      "special": false,
+      "image": "/images/gamer-anti-woke.svg"
+    },
+    {
+      "id": "ruralista-grileiro",
+      "name": "Ruralista Grileiro",
+      "category": "empresario",
+      "team": "blue",
+      "attack": 6,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/ruralista-grileiro.svg"
+    },
+    {
+      "id": "cidadao-de-bem",
+      "name": "Cidadão de Bem",
+      "category": "militante",
+      "team": "blue",
+      "attack": 3,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/cidadao-de-bem.svg"
+    },
+    {
+      "id": "terraplanista-patriota",
+      "name": "Terraplanista Patriota",
+      "category": "militante",
+      "team": "blue",
+      "attack": 2,
+      "resistance": 4,
+      "special": false,
+      "image": "/images/terraplanista-patriota.svg"
+    },
+    {
+      "id": "feminista-de-cabelo-verde",
+      "name": "Feminista de Cabelo Verde",
+      "category": "militante",
+      "team": "red",
+      "attack": 5,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/feminista-de-cabelo-verde.svg"
+    },
+    {
+      "id": "eterno-estudante-de-humanas",
+      "name": "Eterno Estudante de Humanas",
+      "category": "intelectual",
+      "team": "red",
+      "attack": 2,
+      "resistance": 9,
+      "special": false,
+      "image": "/images/eterno-estudante-de-humanas.svg"
+    },
+    {
+      "id": "comunista-de-iphone",
+      "name": "Comunista de iPhone",
+      "category": "influenciador",
+      "team": "red",
+      "attack": 3,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/comunista-de-iphone.svg"
+    },
+    {
+      "id": "sindicalista-pelego",
+      "name": "Sindicalista Pelego",
+      "category": "politico",
+      "team": "red",
+      "attack": 4,
+      "resistance": 8,
+      "special": true,
+      "image": "/images/sindicalista-pelego.svg"
+    },
+    {
+      "id": "militante-de-dce",
+      "name": "Militante de DCE",
+      "category": "militante",
+      "team": "red",
+      "attack": 4,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/militante-de-dce.svg"
+    },
+    {
+      "id": "artista-da-esquerda-caviar",
+      "name": "Artista da Esquerda Caviar",
+      "category": "influenciador",
+      "team": "red",
+      "attack": 4,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/artista-da-esquerda-caviar.svg"
+    },
+    {
+      "id": "professor-que-cita-paulo-freire",
+      "name": "Professor que Cita Paulo Freire",
+      "category": "intelectual",
+      "team": "red",
+      "attack": 4,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/professor-que-cita-paulo-freire.svg"
+    },
+    {
+      "id": "vegano-lacrador",
+      "name": "Vegano Lacrador",
+      "category": "militante",
+      "team": "red",
+      "attack": 4,
+      "resistance": 4,
+      "special": false,
+      "image": "/images/vegano-lacrador.svg"
+    },
+    {
+      "id": "tankie",
+      "name": "Tankie",
+      "category": "militante",
+      "team": "red",
+      "attack": 5,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/tankie.svg"
+    },
+    {
+      "id": "cancelador-profissional",
+      "name": "Cancelador Profissional",
+      "category": "influenciador",
+      "team": "red",
+      "attack": 7,
+      "resistance": 3,
+      "special": true,
+      "image": "/images/cancelador-profissional.svg"
+    },
+    {
+      "id": "cargo-comissionado",
+      "name": "Cargo Comissionado",
+      "category": "burocrata",
+      "team": "red",
+      "attack": 2,
+      "resistance": 9,
+      "special": false,
+      "image": "/images/cargo-comissionado.svg"
+    },
+    {
+      "id": "lider-sem-terra-com-fazenda",
+      "name": "Líder Sem-Terra com Fazenda",
+      "category": "militante",
+      "team": "red",
+      "attack": 5,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/lider-sem-terra-com-fazenda.svg"
+    },
+    {
+      "id": "influencer-da-desconstrucao",
+      "name": "Influencer da Desconstrução",
+      "category": "influenciador",
+      "team": "red",
+      "attack": 3,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/influencer-da-desconstrucao.svg"
+    },
+    {
+      "id": "black-bloc-de-fim-de-semana",
+      "name": "Black Bloc de Fim de Semana",
+      "category": "militante",
+      "team": "red",
+      "attack": 6,
+      "resistance": 3,
+      "special": false,
+      "image": "/images/black-bloc-de-fim-de-semana.svg"
+    },
+    {
+      "id": "militante-que-nunca-erra",
+      "name": "Militante que Nunca Erra",
+      "category": "militante",
+      "team": "red",
+      "attack": 3,
+      "resistance": 7,
+      "special": false,
+      "image": "/images/militante-que-nunca-erra.svg"
+    },
+    {
+      "id": "hippie-da-vila-madalena",
+      "name": "Hippie da Vila Madalena",
+      "category": "influenciador",
+      "team": "red",
+      "attack": 2,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/hippie-da-vila-madalena.svg"
+    },
+    {
+      "id": "academico-pos-estruturalista",
+      "name": "Acadêmico Pós-Estruturalista",
+      "category": "intelectual",
+      "team": "red",
+      "attack": 3,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/academico-pos-estruturalista.svg"
+    },
+    {
+      "id": "ong-fantasma",
+      "name": "ONG Fantasma",
+      "category": "burocrata",
+      "team": "red",
+      "attack": 3,
+      "resistance": 6,
+      "special": false,
+      "image": "/images/ong-fantasma.svg"
+    },
+    {
+      "id": "jornalista-militante",
+      "name": "Jornalista Militante",
+      "category": "influenciador",
+      "team": "red",
+      "attack": 5,
+      "resistance": 5,
+      "special": false,
+      "image": "/images/jornalista-militante.svg"
+    },
+    {
+      "id": "prefeito-do-palanque-eterno",
+      "name": "Prefeito do Palanque Eterno",
+      "category": "politico",
+      "team": "red",
+      "attack": 5,
+      "resistance": 6,
+      "special": true,
+      "image": "/images/prefeito-do-palanque-eterno.svg"
+    }
+  ],
+  "supports": [
+    {
+      "id": "corrente-do-zap",
+      "name": "Corrente do Zap",
+      "team": "blue",
+      "image": "/images/corrente-do-zap.svg",
+      "boost": {
+        "category": "influenciador",
+        "stat": "attack",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "intelectual",
+        "stat": "resistance",
+        "amount": -2
+      }
+    },
+    {
+      "id": "dizimo-turbinado",
+      "name": "Dízimo Turbinado",
+      "team": "blue",
+      "image": "/images/dizimo-turbinado.svg",
+      "boost": {
+        "category": "religioso",
+        "stat": "resistance",
+        "amount": 3
+      },
+      "penalty": {
+        "category": "burocrata",
+        "stat": "attack",
+        "amount": -2
+      }
+    },
+    {
+      "id": "isencao-fiscal",
+      "name": "Isenção Fiscal",
+      "team": "blue",
+      "image": "/images/isencao-fiscal.svg",
+      "boost": {
+        "category": "empresario",
+        "stat": "resistance",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "burocrata",
+        "stat": "resistance",
+        "amount": -2
+      }
+    },
+    {
+      "id": "motociata",
+      "name": "Motociata",
+      "team": "blue",
+      "image": "/images/motociata.svg",
+      "boost": {
+        "category": "militante",
+        "stat": "attack",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "influenciador",
+        "stat": "resistance",
+        "amount": -2
+      }
+    },
+    {
+      "id": "emenda-parlamentar",
+      "name": "Emenda Parlamentar",
+      "team": "blue",
+      "image": "/images/emenda-parlamentar.svg",
+      "boost": {
+        "category": "politico",
+        "stat": "attack",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "intelectual",
+        "stat": "attack",
+        "amount": -2
+      }
+    },
+    {
+      "id": "verba-cultural",
+      "name": "Verba Cultural",
+      "team": "red",
+      "image": "/images/verba-cultural.svg",
+      "boost": {
+        "category": "influenciador",
+        "stat": "resistance",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "empresario",
+        "stat": "attack",
+        "amount": -2
+      }
+    },
+    {
+      "id": "greve-geral",
+      "name": "Greve Geral",
+      "team": "red",
+      "image": "/images/greve-geral.svg",
+      "boost": {
+        "category": "militante",
+        "stat": "attack",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "empresario",
+        "stat": "resistance",
+        "amount": -2
+      }
+    },
+    {
+      "id": "estabilidade-vitalicia",
+      "name": "Estabilidade Vitalícia",
+      "team": "red",
+      "image": "/images/estabilidade-vitalicia.svg",
+      "boost": {
+        "category": "burocrata",
+        "stat": "resistance",
+        "amount": 3
+      },
+      "penalty": {
+        "category": "militar",
+        "stat": "attack",
+        "amount": -2
+      }
+    },
+    {
+      "id": "textao-lacrador",
+      "name": "Textão Lacrador",
+      "team": "red",
+      "image": "/images/textao-lacrador.svg",
+      "boost": {
+        "category": "influenciador",
+        "stat": "attack",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "religioso",
+        "stat": "resistance",
+        "amount": -2
+      }
+    },
+    {
+      "id": "nota-de-repudio",
+      "name": "Nota de Repúdio",
+      "team": "red",
+      "image": "/images/nota-de-repudio.svg",
+      "boost": {
+        "category": "intelectual",
+        "stat": "attack",
+        "amount": 2
+      },
+      "penalty": {
+        "category": "politico",
+        "stat": "attack",
+        "amount": -2
+      }
+    }
+  ],
+  "arenas": [
+    {
+      "id": "planicie-neutra",
+      "name": "Planície Neutra",
+      "favors": null,
+      "image": "https://placehold.co/640x360/4b5563/ffffff?text=Plan%C3%ADcie+Neutra"
+    },
+    {
+      "id": "vulcao-ardente",
+      "name": "Vulcão Ardente",
+      "favors": "red",
+      "image": "https://placehold.co/640x360/b91c1c/ffffff?text=Vulc%C3%A3o+Ardente"
+    },
+    {
+      "id": "forja-escarlate",
+      "name": "Forja Escarlate",
+      "favors": "red",
+      "image": "https://placehold.co/640x360/b91c1c/ffffff?text=Forja+Escarlate"
+    },
+    {
+      "id": "geleira-eterna",
+      "name": "Geleira Eterna",
+      "favors": "blue",
+      "image": "https://placehold.co/640x360/1d4ed8/ffffff?text=Geleira+Eterna"
+    },
+    {
+      "id": "templo-das-mares",
+      "name": "Templo das Marés",
+      "favors": "blue",
+      "image": "https://placehold.co/640x360/1d4ed8/ffffff?text=Templo+das+Mar%C3%A9s"
+    }
+  ]
+}
