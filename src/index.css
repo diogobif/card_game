@@ -10,6 +10,14 @@
   --team-blue: #1d5fd1;
   --team-blue-bg: rgba(29, 95, 209, 0.1);
   --shadow: rgba(0, 0, 0, 0.08) 0 10px 20px -6px;
+  /* "Your move": highlights whatever the player must act on now. */
+  --action: #f59e0b;
+  --action-strong: #d97706;
+  --action-ink: #1a1205;
+  --action-soft: #fff4e0;
+  --action-text: #7a3e00;
+  --action-ring: rgba(245, 158, 11, 0.3);
+  --muted-bg: #ece9f1;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
 
@@ -33,6 +41,11 @@
     --team-blue: #6ea2ff;
     --team-blue-bg: rgba(110, 162, 255, 0.12);
     --shadow: rgba(0, 0, 0, 0.4) 0 10px 20px -6px;
+    --action-strong: #f5a524;
+    --action-soft: rgba(245, 158, 11, 0.12);
+    --action-text: #fbbf5a;
+    --action-ring: rgba(245, 158, 11, 0.35);
+    --muted-bg: #2a2833;
   }
 }
 
@@ -118,4 +131,99 @@ h3 {
 
 .match-players {
   padding-left: 20px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.75rem;
+}
+
+.avatar-md {
+  width: 38px;
+  height: 38px;
+  font-size: 0.8rem;
+}
+
+.avatar-lg {
+  width: 60px;
+  height: 60px;
+  font-size: 1.25rem;
+}
+
+.avatar-red {
+  color: var(--team-red);
+  background: var(--team-red-bg);
+}
+
+.avatar-blue {
+  color: var(--team-blue);
+  background: var(--team-blue-bg);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-cards {
+  display: flex;
+}
+
+.logo-cards span {
+  width: 18px;
+  height: 25px;
+  border-radius: 4px;
+  background: var(--team-red);
+  transform: rotate(-10deg);
+  box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.4);
+}
+
+.logo-cards span + span {
+  margin-left: -6px;
+  background: var(--team-blue);
+  transform: rotate(8deg);
+}
+
+.logo-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text-h);
+}
+
+.logo-lg .logo-cards span {
+  width: 36px;
+  height: 50px;
+  border-radius: 7px;
+}
+
+.logo-lg .logo-cards span + span {
+  margin-left: -11px;
+}
+
+.logo-lg {
+  gap: 14px;
+}
+
+.logo-lg .logo-name {
+  font-size: 2.6rem;
+}
+
+.btn-action {
+  border-color: var(--action-strong);
+  background: var(--action-strong);
+  color: var(--action-ink);
+  font-weight: 800;
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useParams } from 'react-router'
 import type { MatchErrorReason } from '../../shared/protocol.ts'
+import { AttackFx } from '../match/AttackFx.tsx'
 import { GameBoard } from '../match/GameBoard.tsx'
 import { useServer } from '../net/ServerContext.ts'
 import { usePlayer } from '../player/PlayerContext.ts'
@@ -45,8 +46,16 @@ function MatchView({ matchId }: { matchId: string }) {
 
   // The board stays up after the game ends so the result is visible.
   if (view && (match || view.phase === 'over')) {
+    // The effect lives outside the board, which remounts every phase, so it plays across the change.
     return (
-      <GameBoard key={`${view.turn}-${view.phase}`} game={view} send={send} />
+      <>
+        <GameBoard key={`${view.turn}-${view.phase}`} game={view} send={send} />
+        <AttackFx
+          event={view.lastAttack}
+          myId={player.id}
+          names={{ [view.me.player.id]: view.me.player.name, [view.opponent.player.id]: view.opponent.player.name }}
+        />
+      </>
     )
   }
 

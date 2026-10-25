@@ -1,3 +1,4 @@
+/* Shared page column, also used by the match and rules pages. */
 .home {
   max-width: 720px;
   margin: 0 auto;
@@ -7,18 +8,83 @@
   gap: 16px;
 }
 
-.home-header {
+.home-lobby {
+  max-width: 1200px;
+  padding: 24px 24px 48px;
+  gap: 20px;
+}
+
+/* ---- Top bar ---- */
+
+.app-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
 
-.home-header h1 {
-  margin: 0 0 4px;
-  font-size: 1.6rem;
-  overflow-wrap: anywhere;
+.app-bar-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.app-bar-link {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+.app-bar-btn {
+  min-height: 40px;
+  font-size: 0.9rem;
+}
+
+.me-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.me-chip-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.me-chip-text strong {
+  font-size: 0.9rem;
+  color: var(--text-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.me-chip-team {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.team-text-red {
+  color: var(--team-red);
+}
+
+.team-text-blue {
+  color: var(--team-blue);
 }
 
 .home-status,
@@ -35,64 +101,467 @@
   color: var(--error);
 }
 
-.home-list {
-  list-style: none;
+/* ---- Invites: the loudest thing on the page ---- */
+
+.invite-hero {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  color: var(--action-ink);
+  background: var(--action);
+  box-shadow: 0 16px 32px -16px rgba(180, 83, 9, 0.75);
+  animation: invite-in 0.45s ease-out;
+}
+
+.invite-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 26px;
+}
+
+.invite-avatar {
+  position: relative;
+  display: flex;
+}
+
+.invite-avatar .avatar {
+  background: #ffffff;
+}
+
+/* A pulsing ring around the inviter. */
+.invite-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  animation: invite-pulse 1.6s ease-out infinite;
+}
+
+.invite-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.invite-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.invite-text h2 {
   margin: 0;
-  padding: 0;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: var(--action-ink);
+  overflow-wrap: anywhere;
 }
 
-.home-row {
+.invite-text p {
+  margin: 0;
+}
+
+.invite-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.invite-btn {
+  min-height: 52px;
+  padding: 0 24px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.invite-btn.is-primary {
+  border: 0;
+  background: var(--action-ink);
+  color: #ffffff;
+}
+
+.invite-btn.is-secondary {
+  border: 2px solid rgba(26, 18, 5, 0.25);
+  background: transparent;
+  color: var(--action-ink);
+}
+
+.invite-btn.is-small {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 0.9rem;
+}
+
+.invite-btn:hover {
+  opacity: 0.9;
+}
+
+.invite-more {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
-  padding: 10px 0;
-  border-top: 1px solid var(--border);
+  padding: 10px 26px;
+  background: rgba(255, 255, 255, 0.35);
 }
 
-.home-row:first-child {
-  border-top: 0;
+.invite-more .avatar {
+  background: #ffffff;
 }
 
-.home-user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+.invite-more-text {
+  flex: 1;
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
-.home-actions {
-  display: flex;
-  gap: 8px;
+@keyframes invite-in {
+  from {
+    transform: translateY(-8px) scale(0.98);
+    opacity: 0;
+  }
 }
 
-.home-tag {
-  font-size: 0.8rem;
-  padding: 2px 8px;
+@keyframes invite-pulse {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+/* ---- Players by team + side column ---- */
+
+.home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.home-players,
+.home-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.home-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.home-section-head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.home-count {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.home-teams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.team-list {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.team-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+}
+
+.team-list-red .team-list-head {
+  background: #c62828;
+}
+
+.team-list-blue .team-list-head {
+  background: #1d5fd1;
+}
+
+.team-list-mine {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.team-list-count {
+  padding: 2px 10px;
   border-radius: 999px;
-  background: var(--border);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.22);
+  white-space: nowrap;
+}
+
+.team-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 16px;
+}
+
+.team-list-empty {
+  margin: 0;
+  padding: 16px;
+  font-size: 0.9rem;
+}
+
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.team-row:first-child {
+  border-top: 0;
+}
+
+.team-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-row-text strong {
+  color: var(--text-h);
+  overflow-wrap: anywhere;
+}
+
+.team-row-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.team-row-status.is-invited-me {
+  font-weight: 700;
+  color: var(--action-text);
+}
+
+.team-row .btn {
+  min-height: 40px;
+  flex-shrink: 0;
+}
+
+.home-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #8a8494;
+}
+
+.is-available .home-dot {
+  background: #2e7d32;
+}
+
+.is-invited-me .home-dot,
+.home-dot.is-action {
+  background: var(--action-strong);
+}
+
+.home-link-card,
+.home-help {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-link-card h2,
+.home-help h2 {
+  margin: 0;
+}
+
+.home-link-card p,
+.home-help p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.home-wide-btn {
+  min-height: 46px;
 }
 
 .home-link {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
 }
 
 .home-link input {
   flex: 1;
   min-width: 0;
+  min-height: 44px;
   font: inherit;
-  padding: 8px 12px;
+  font-size: 0.9rem;
+  padding: 0 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg);
   color: var(--text-h);
 }
 
+.home-link .btn {
+  min-height: 44px;
+}
+
 .home-waiting {
-  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.home-waiting > span:nth-child(2) {
+  flex: 1;
+}
+
+.home-text-btn {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.home-help ol {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.home-help a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-hero,
+  .invite-avatar::after {
+    animation: none;
+  }
+}
+
+/* ---- Narrower screens ---- */
+
+@media (max-width: 960px) {
+  .home-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .invite-main {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .invite-text {
+    flex-basis: calc(100% - 80px);
+  }
+
+  .invite-text h2 {
+    font-size: 1.3rem;
+  }
+
+  .invite-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .invite-btn {
+    padding: 0 12px;
+  }
+
+  .invite-more {
+    flex-wrap: wrap;
+    padding: 10px 18px;
+  }
+
+  .invite-more-text {
+    flex-basis: calc(100% - 44px);
+  }
+
+  .invite-more .invite-btn {
+    flex: 1;
+  }
+
+  .home-teams {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones: the bar keeps the logo and your chip; "Como jogar" moves to the help card. */
+@media (max-width: 560px) {
+  .app-bar {
+    padding: 8px 12px;
+  }
+
+  .app-bar-link,
+  .me-chip-team {
+    display: none;
+  }
+
+  .app-bar-btn {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .home-lobby {
+    padding: 16px 16px 40px;
+    gap: 16px;
+  }
+
+  .team-list ul {
+    padding: 0 14px;
+  }
+
+  .team-row .btn {
+    min-height: 44px;
+  }
 }

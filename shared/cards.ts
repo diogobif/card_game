@@ -23,7 +23,7 @@ export type CharacterCard = {
   team: Team
   attack: number
   resistance: number
-  // The 1/1 cards: collecting all 5 of one team wins the match.
+  // 2 per team: when revealed, removes all of the opponent's cards from the arena.
   special: boolean
   image: string
 }
@@ -31,6 +31,7 @@ export type CharacterCard = {
 export type StatModifier = {
   category: Category
   stat: Stat
+  /** Always positive: a boost adds it, a penalty subtracts it. */
   amount: number
 }
 

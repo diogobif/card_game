@@ -3,14 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@12.14.0",
   "scripts": {
     "dev": "concurrently -k -n web,server -c blue,magenta \"vite\" \"pnpm dev:server\"",
     "dev:web": "vite",
     "dev:server": "node --watch server/index.ts",
     "start:server": "node server/index.ts",
+    "start": "node server/index.ts",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "art": "node scripts/generate-art.ts"
   },
   "dependencies": {
     "react": "^19.2.8",

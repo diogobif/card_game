@@ -24,7 +24,6 @@ export type GamePhase = 'choose' | 'attack' | 'over'
 
 export type GameEndReason =
   | 'life'
-  | 'specials'
   | 'no-cards'
   | 'turn-limit'
   | 'forfeit'
@@ -41,6 +40,7 @@ export type PlayedSupport = { playerId: string; support: SupportCard }
 export type SelfView = {
   player: Player
   life: number
+  deckCount: number
   hand: CharacterCard[]
   support: SupportCard
   supportUsed: boolean
@@ -51,10 +51,30 @@ export type SelfView = {
 export type OpponentView = {
   player: Player
   life: number
+  deckCount: number
   handCount: number
   supportUsed: boolean
   field: FieldCard[]
   hasChosen: boolean
+}
+
+/** What the last attack did, so clients can animate it. Card stats are taken before the hit. */
+export type AttackEvent = {
+  /** Increases with every attack in the match; clients animate each id once. */
+  id: number
+  turn: number
+  attackerPlayerId: string
+  defenderPlayerId: string
+  attacker: FieldCard
+  /** null on a direct attack on life points. */
+  target: FieldCard | null
+  power: number
+  guard: number | null
+  /** Stats after the hit; null when that card left the arena. */
+  attackerAttackAfter: number | null
+  targetResistanceAfter: number | null
+  lifeDamage: number
+  defenderLifeAfter: number
 }
 
 /** One player's view of a match: the opponent's hand and unused support stay hidden. */
@@ -66,11 +86,11 @@ export type GameView = {
   /** Time left in the current phase when this view was sent. */
   timeLeftMs: number
   attackerId: string | null
-  deckCount: number
   me: SelfView
   opponent: OpponentView
   /** Support cards played this turn; their effects last until the turn ends. */
   turnSupports: PlayedSupport[]
   log: string[]
   result: GameResult | null
+  lastAttack: AttackEvent | null
 }

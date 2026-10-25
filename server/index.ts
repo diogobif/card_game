@@ -1,7 +1,9 @@
 import { randomBytes } from 'node:crypto'
+import { createServer } from 'node:http'
 import { WebSocket, WebSocketServer } from 'ws'
 import { isPlayer, type Player } from '../shared/player.ts'
 import { attack, createGame, disposeGame, forfeit, playCard, viewFor, type Game } from './game.ts'
+import { serveStatic } from './static.ts'
 import {
   WS_PATH,
   type ClientMessage,
@@ -24,7 +26,9 @@ const pendingInvites = new Set<string>()
 
 const inviteKey = (fromId: string, toId: string) => `${fromId}>${toId}`
 
-const wss = new WebSocketServer({ port: PORT, path: WS_PATH })
+// One HTTP server: serves the built client (dist/) and upgrades WS_PATH to the game socket.
+const httpServer = createServer((req, res) => void serveStatic(req, res))
+const wss = new WebSocketServer({ server: httpServer, path: WS_PATH })
 
 wss.on('connection', (socket) => {
   connections.set(socket, null)
@@ -54,7 +58,18 @@ wss.on('connection', (socket) => {
   })
 })
 
-console.log(`Game server listening on ws://localhost:${PORT}${WS_PATH}`)
+httpServer.listen(PORT, () => {
+  console.log(`Game server listening on http://localhost:${PORT} (WebSocket at ${WS_PATH})`)
+})
+
+// Docker sends SIGTERM on stop; exit promptly instead of waiting for the kill timeout.
+for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+  process.on(signal, () => {
+    wss.close()
+    httpServer.close(() => process.exit(0))
+    setTimeout(() => process.exit(0), 3000).unref()
+  })
+}
 
 function handleHello(socket: WebSocket, data: unknown) {
   if (!isPlayer(data)) {
@@ -181,9 +196,7 @@ function startMatch(match: MatchInfo) {
     removeWaitingMatches(p.id)
     sendTo(p.id, { type: 'match-start', match })
   }
-  const game = createGame(match.id, match.players, onGameUpdate)
-  // A dealt hand can already win (all 5 specials), which ends the match on the spot.
-  if (game.phase !== 'over') games.set(match.id, game)
+  games.set(match.id, createGame(match.id, match.players, onGameUpdate))
   broadcastUsers()
 }
 

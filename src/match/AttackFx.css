@@ -1,0 +1,496 @@
+/*
+ * The attack clash. One 2.4s sequence; beats line up with AttackFx.tsx:
+ * 0 enter · 300 wind-up · 420 strike · 600 impact · 760 break · 900 life · 1000 attacker breaks · 2050 exit.
+ */
+
+.fx {
+  --reach: 150px;
+  --gap: 120px;
+
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  pointer-events: none;
+  animation: fx-scrim 2.4s ease-out both;
+}
+
+.fx .game-card {
+  --card-w: 150px;
+}
+
+.fx-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: fx-stage 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.fx-caption {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.fx-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.fx-card,
+.fx-life {
+  position: relative;
+}
+
+.fx-card-whole {
+  position: relative;
+}
+
+/* ---- Attacker: wind up, accelerate into the hit, settle back ---- */
+
+.fx-attacker {
+  z-index: 2;
+  animation: fx-lunge 500ms 300ms both;
+}
+
+@keyframes fx-lunge {
+  0% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  24% {
+    transform: translateX(-20px) rotate(-7deg);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  60% {
+    transform: translateX(var(--reach)) rotate(5deg);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* ---- Target: takes the hit ---- */
+
+.fx-target-slot {
+  animation: fx-shake 340ms 600ms both;
+}
+
+@keyframes fx-shake {
+  0% {
+    transform: translateX(0);
+    filter: brightness(2.2);
+  }
+  20% {
+    transform: translateX(12px) rotate(3deg);
+  }
+  45% {
+    transform: translateX(-8px) rotate(-2deg);
+  }
+  70% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* The flash where the cards meet. */
+.fx-flash {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 160px;
+  height: 160px;
+  margin: -80px 0 0 -80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 236, 179, 0.9) 22%, rgba(245, 158, 11, 0.45) 45%, transparent 70%);
+  opacity: 0;
+  animation: fx-flash 420ms 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fx-flash {
+  0% {
+    opacity: 1;
+    transform: scale(0.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+/* ---- Damage numbers ---- */
+
+.fx-damage {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  z-index: 3;
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-size: 1.6rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  animation: fx-pop 1300ms 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.fx-damage.is-res {
+  background: #c62828;
+}
+
+.fx-damage.is-atk {
+  background: #8a4500;
+  animation-delay: 680ms;
+}
+
+@keyframes fx-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.6);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(-50%, -6px) scale(1.15);
+  }
+  26% {
+    transform: translate(-50%, -6px) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -18px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -28px);
+  }
+}
+
+/* ---- Breaking: cracks appear on impact, then the card splits into its own fragments ---- */
+
+.fx-cracks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: fx-cracks 160ms 610ms ease-out both;
+}
+
+.fx-cracks path {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.7));
+}
+
+@keyframes fx-cracks {
+  to {
+    opacity: 1;
+  }
+}
+
+.fx-card.is-broken .fx-card-whole {
+  animation: fx-vanish 1ms 760ms both;
+}
+
+.fx-attacker.is-broken .fx-card-whole {
+  animation-delay: 1000ms;
+}
+
+.fx-attacker.is-broken .fx-cracks {
+  animation-delay: 860ms;
+}
+
+@keyframes fx-vanish {
+  to {
+    visibility: hidden;
+  }
+}
+
+.fx-shard {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--clip);
+  visibility: hidden;
+  animation: fx-shard 760ms 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.fx-attacker .fx-shard {
+  animation-delay: 1000ms;
+}
+
+@keyframes fx-shard {
+  0% {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    visibility: visible;
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.92);
+    filter: blur(1px);
+  }
+}
+
+/* Only shown to reduced-motion users, who see a fade instead of the split. */
+.fx-broken-label {
+  display: none;
+}
+
+/* ---- Direct attack on life points ---- */
+
+.fx-life {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+  padding: 18px 22px;
+  border-radius: 18px;
+  color: #c62828;
+  background: #ffffff;
+  box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.6);
+}
+
+.fx-life strong {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #0f0d14;
+  font-variant-numeric: tabular-nums;
+}
+
+.fx-life span:last-child {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4b4654;
+}
+
+.fx-life-loss {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  z-index: 3;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #c62828;
+  opacity: 0;
+  animation: fx-rise 1100ms 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fx-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  18%,
+  80% {
+    opacity: 1;
+    transform: translateY(-12px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.fx-result {
+  margin: 0;
+  max-width: 34rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+  color: #0f0d14;
+  background: #ffffff;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  animation: fx-result 1250ms 950ms ease-out both;
+}
+
+@keyframes fx-result {
+  0% {
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- Whole-sequence enter and exit (exit is faster than entry) ---- */
+
+@keyframes fx-scrim {
+  0% {
+    background: rgba(15, 13, 20, 0);
+  }
+  10%,
+  86% {
+    background: rgba(15, 13, 20, 0.66);
+  }
+  100% {
+    background: rgba(15, 13, 20, 0);
+  }
+}
+
+@keyframes fx-stage {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  11%,
+  86% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+/* ---- Phones ---- */
+
+@media (max-width: 640px) {
+  .fx {
+    --reach: 70px;
+    --gap: 48px;
+  }
+
+  .fx .game-card {
+    --card-w: 112px;
+  }
+
+  .fx-stage {
+    gap: 30px;
+  }
+
+  .fx-caption {
+    font-size: 1.2rem;
+  }
+
+  .fx-life {
+    min-width: 100px;
+    padding: 14px;
+  }
+
+  .fx-result {
+    font-size: 0.9rem;
+    border-radius: 14px;
+  }
+}
+
+/*
+ * Reduced motion: nothing travels, shakes or splits. The hit still reads: a flash of brightness,
+ * the damage numbers, and a destroyed card fading to grey with a label.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .fx-stage,
+  .fx-damage,
+  .fx-life-loss {
+    animation-name: fx-fade-only;
+  }
+
+  .fx-attacker {
+    animation: none;
+  }
+
+  .fx-target-slot {
+    animation: fx-brighten 340ms 600ms both;
+  }
+
+  .fx-flash,
+  .fx-shard,
+  .fx-cracks {
+    display: none;
+  }
+
+  .fx-damage {
+    transform: translate(-50%, -6px);
+  }
+
+  .fx-card.is-broken .fx-card-whole {
+    animation: fx-grey 300ms 760ms both;
+  }
+
+  .fx-attacker.is-broken .fx-card-whole {
+    animation-delay: 1000ms;
+  }
+
+  .fx-broken-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    background: #0f0d14;
+    transform: translate(-50%, -50%) rotate(-10deg);
+    opacity: 0;
+    animation: fx-fade-in 200ms 800ms both;
+  }
+
+  .fx-attacker .fx-broken-label {
+    animation-delay: 1040ms;
+  }
+}
+
+@keyframes fx-fade-only {
+  0% {
+    opacity: 0;
+  }
+  12%,
+  86% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fx-brighten {
+  0% {
+    filter: brightness(2);
+  }
+  100% {
+    filter: none;
+  }
+}
+
+@keyframes fx-grey {
+  to {
+    opacity: 0.35;
+    filter: grayscale(1);
+  }
+}
+
+@keyframes fx-fade-in {
+  to {
+    opacity: 1;
+  }
+}

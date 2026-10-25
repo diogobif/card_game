@@ -19,7 +19,6 @@ export const STAT_LABELS: Record<Stat, string> = {
 
 export const END_REASON_LABELS: Record<GameEndReason, string> = {
   life: 'Os pontos de vida chegaram a zero.',
-  specials: 'As 5 cartas especiais de um time foram reunidas.',
   'no-cards': 'As cartas acabaram; vence quem tem mais pontos de vida.',
   'turn-limit': `Fim dos ${MAX_TURNS} turnos; vence quem tem mais pontos de vida.`,
   forfeit: 'Um jogador desistiu da partida.',

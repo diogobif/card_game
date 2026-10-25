@@ -4,9 +4,9 @@ import {
   SUPPORTS,
   type Arena,
   type CharacterCard,
-  type Stat,
   type SupportCard,
 } from '../shared/cards.ts'
+import { resolveAttack } from '../shared/combat.ts'
 import {
   ARENA_BONUS,
   HAND_SIZE,
@@ -14,6 +14,7 @@ import {
   MAX_TURNS,
   START_LIFE,
   TURN_TIME_MS,
+  type AttackEvent,
   type FieldCard,
   type GamePhase,
   type GameResult,
@@ -27,6 +28,8 @@ const LOG_SIZE = 12
 type PlayerState = {
   player: Player
   life: number
+  /** Each player draws only from their own team's characters. */
+  deck: CharacterCard[]
   hand: CharacterCard[]
   support: SupportCard
   supportUsed: boolean
@@ -37,7 +40,6 @@ type PlayerState = {
 export type Game = {
   matchId: string
   arena: Arena
-  deck: CharacterCard[]
   players: [PlayerState, PlayerState]
   turn: number
   phase: GamePhase
@@ -47,27 +49,31 @@ export type Game = {
   turnSupports: PlayedSupport[]
   log: string[]
   result: GameResult | null
+  lastAttack: AttackEvent | null
   /** Called after every state change, so the server can push fresh views. */
   onUpdate: (game: Game) => void
 }
 
 export function createGame(matchId: string, players: Player[], onUpdate: (game: Game) => void): Game {
-  const deck = shuffle([...CHARACTERS])
-  const supports = shuffle([...SUPPORTS])
-  const makePlayer = (player: Player, i: number): PlayerState => ({
-    player,
-    life: START_LIFE,
-    hand: deck.splice(0, HAND_SIZE),
-    support: supports[i],
-    supportUsed: false,
-    field: [],
-    choice: null,
-  })
+  // Players on the same team each get their own copy of that team's cards.
+  const makePlayer = (player: Player): PlayerState => {
+    const deck = shuffle(CHARACTERS.filter((c) => c.team === player.team))
+    const supports = SUPPORTS.filter((s) => s.team === player.team)
+    return {
+      player,
+      life: START_LIFE,
+      deck,
+      hand: deck.splice(0, HAND_SIZE),
+      support: supports[Math.floor(Math.random() * supports.length)],
+      supportUsed: false,
+      field: [],
+      choice: null,
+    }
+  }
   const game: Game = {
     matchId,
     arena: ARENAS[Math.floor(Math.random() * ARENAS.length)],
-    deck,
-    players: [makePlayer(players[0], 0), makePlayer(players[1], 1)],
+    players: [makePlayer(players[0]), makePlayer(players[1])],
     turn: 0,
     phase: 'choose',
     deadline: 0,
@@ -76,10 +82,11 @@ export function createGame(matchId: string, players: Player[], onUpdate: (game: 
     turnSupports: [],
     log: [],
     result: null,
+    lastAttack: null,
     onUpdate,
   }
   addLog(game, `Arena: ${game.arena.name}.`)
-  if (!checkSpecials(game)) startChoosePhase(game)
+  startChoosePhase(game)
   return game
 }
 
@@ -133,71 +140,47 @@ export function attack(
   // Direct attacks on life points are only allowed against an empty arena.
   if (target === undefined || (target === null && foe.field.length > 0)) return
 
-  const atkMod = modifier(game, me, attacker, 'attack')
-  const power = Math.max(0, attacker.attack + atkMod)
+  const outcome = resolveAttack(game.turnSupports, me.player.id, attacker, foe.player.id, target)
+  // Snapshot before the hit changes the cards.
+  const before = { attacker: { ...attacker }, target: target && { ...target } }
 
   if (!target) {
-    damageLife(foe, power)
-    addLog(game, `${attacker.card.name} atacou ${foe.player.name} diretamente (${power} de dano).`)
+    damageLife(foe, outcome.lifeDamage)
+    addLog(game, `${attacker.card.name} atacou ${foe.player.name} diretamente (${outcome.power} de dano).`)
   } else {
-    const resMod = modifier(game, foe, target, 'resistance')
-    const guard = Math.max(0, target.resistance + resMod)
-    addLog(game, `${attacker.card.name} (${power}) atacou ${target.card.name} (${guard}).`)
-
-    // The attacker loses strength equal to the target's resistance.
-    if (power - guard > 0) attacker.attack = afterHit(attacker.attack, atkMod, guard)
-    else removeFromField(game, me, attacker)
-
-    // Leftover damage goes straight to the defending player's life points.
-    const leftover = hitCard(game, foe, target, resMod, guard, power)
-    if (leftover > 0) {
-      damageLife(foe, leftover)
-      addLog(game, `${leftover} de dano excedente em ${foe.player.name}.`)
+    addLog(game, `${attacker.card.name} (${outcome.power}) atacou ${target.card.name} (${outcome.guard}).`)
+    if (outcome.attackerAttack === null) removeFromField(game, me, attacker)
+    else attacker.attack = outcome.attackerAttack
+    if (outcome.targetResistance === null) removeFromField(game, foe, target)
+    else target.resistance = outcome.targetResistance
+    if (outcome.lifeDamage > 0) {
+      damageLife(foe, outcome.lifeDamage)
+      addLog(game, `${outcome.lifeDamage} de dano excedente em ${foe.player.name}.`)
     }
+  }
+
+  game.lastAttack = {
+    id: (game.lastAttack?.id ?? 0) + 1,
+    turn: game.turn,
+    attackerPlayerId: me.player.id,
+    defenderPlayerId: foe.player.id,
+    attacker: before.attacker,
+    target: before.target,
+    power: outcome.power,
+    guard: outcome.guard,
+    attackerAttackAfter: outcome.attackerAttack,
+    targetResistanceAfter: outcome.targetResistance,
+    lifeDamage: outcome.lifeDamage,
+    defenderLifeAfter: foe.life,
   }
 
   if (foe.life <= 0) endGame(game, { winnerId: me.player.id, reason: 'life' })
   else startChoosePhase(game)
 }
 
-/** Applies damage to a field card; returns the damage left over after it falls. */
-function hitCard(
-  game: Game,
-  owner: PlayerState,
-  card: FieldCard,
-  mod: number,
-  resistance: number,
-  damage: number,
-): number {
-  if (resistance - damage > 0) {
-    card.resistance = afterHit(card.resistance, mod, damage)
-    return 0
-  }
-  removeFromField(game, owner, card)
-  return damage - resistance
-}
-
-// A temporary support boost absorbs the hit first; a temporary reduction doesn't linger.
-function afterHit(current: number, mod: number, damage: number): number {
-  return current - Math.max(0, damage - Math.max(0, mod))
-}
-
 function removeFromField(game: Game, owner: PlayerState, card: FieldCard) {
   owner.field = owner.field.filter((f) => f !== card)
   addLog(game, `${card.card.name} saiu da arena.`)
-}
-
-/** This turn's support bonus: the owner's boosts plus the opponent's reductions. */
-function modifier(game: Game, owner: PlayerState, card: FieldCard, stat: Stat): number {
-  let total = 0
-  for (const { playerId, support } of game.turnSupports) {
-    const mine = playerId === owner.player.id
-    const effect = mine ? support.boost : support.penalty
-    if (effect.category === card.card.category && effect.stat === stat) {
-      total += mine ? effect.amount : -effect.amount
-    }
-  }
-  return total
 }
 
 function damageLife(p: PlayerState, amount: number) {
@@ -247,6 +230,7 @@ function canPlay(p: PlayerState): boolean {
 
 function reveal(game: Game) {
   const played: (FieldCard | null)[] = []
+  const specialPlayers: PlayerState[] = []
   for (const p of game.players) {
     const choice = p.choice
     if (!choice) {
@@ -264,15 +248,23 @@ function reveal(game: Game) {
     p.field.push(placed)
     played.push(placed)
     addLog(game, `${p.player.name} jogou ${choice.card.name}.`)
+    if (choice.card.special) specialPlayers.push(p)
     if (choice.useSupport) {
       p.supportUsed = true
       game.turnSupports.push({ playerId: p.player.id, support: p.support })
       addLog(game, `${p.player.name} usou o suporte ${p.support.name}.`)
     }
-    const drawn = game.deck.shift()
+    const drawn = p.deck.shift()
     if (drawn) p.hand.push(drawn)
   }
-  if (checkSpecials(game)) return
+  // A revealed special clears the opponent's arena, including the card they just played.
+  // Cards are placed first, so two specials in the same turn clear both arenas.
+  for (const p of specialPlayers) {
+    const foe = game.players.find((s) => s !== p)!
+    if (foe.field.length === 0) continue
+    foe.field = []
+    addLog(game, `Carta especial de ${p.player.name} limpou a arena de ${foe.player.name}!`)
+  }
 
   if (game.attacker === null) {
     // First attack goes to whoever revealed the stronger card; ties are random.
@@ -294,21 +286,6 @@ function reveal(game: Game) {
     startChoosePhase(game)
   })
   game.onUpdate(game)
-}
-
-// Holding all 5 special cards of one team wins; both at once is a draw.
-function checkSpecials(game: Game): boolean {
-  const winners = game.players.filter((p) =>
-    (['red', 'blue'] as const).some(
-      (team) => p.hand.filter((c) => c.special && c.team === team).length === 5,
-    ),
-  )
-  if (winners.length === 0) return false
-  endGame(game, {
-    winnerId: winners.length === 1 ? winners[0].player.id : null,
-    reason: 'specials',
-  })
-  return true
 }
 
 function endGame(game: Game, result: GameResult) {
@@ -340,10 +317,10 @@ export function viewFor(game: Game, playerId: string): GameView {
     phase: game.phase,
     timeLeftMs: game.phase === 'over' ? 0 : Math.max(0, game.deadline - Date.now()),
     attackerId: game.attacker === null ? null : game.players[game.attacker].player.id,
-    deckCount: game.deck.length,
     me: {
       player: me.player,
       life: me.life,
+      deckCount: me.deck.length,
       hand: me.hand,
       support: me.support,
       supportUsed: me.supportUsed,
@@ -353,6 +330,7 @@ export function viewFor(game: Game, playerId: string): GameView {
     opponent: {
       player: foe.player,
       life: foe.life,
+      deckCount: foe.deck.length,
       handCount: foe.hand.length,
       supportUsed: foe.supportUsed,
       field: foe.field,
@@ -361,6 +339,7 @@ export function viewFor(game: Game, playerId: string): GameView {
     turnSupports: game.turnSupports,
     log: game.log,
     result: game.result,
+    lastAttack: game.lastAttack,
   }
 }
 
