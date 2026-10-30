@@ -19,11 +19,7 @@ export function Rules() {
     <div className="rules">
       <section>
         <h2>Objetivo</h2>
-        <p>Vence quem primeiro:</p>
-        <ul>
-          <li>zerar os {START_LIFE} pontos de vida do oponente, ou</li>
-          <li>tiver na mão as 5 cartas especiais de um mesmo time.</li>
-        </ul>
+        <p>Vence quem primeiro zerar os {START_LIFE} pontos de vida do oponente.</p>
         <p>A partida dura no máximo {MAX_TURNS} turnos. Ao final, vence quem tiver mais pontos de vida.</p>
       </section>
 
@@ -32,10 +28,6 @@ export function Rules() {
         <ul>
           <li>
             <strong>Personagens</strong> têm força ⚔ e resistência 🛡 (de 1 a 10) e um tipo: {CATEGORY_LIST}.
-          </li>
-          <li>
-            <strong>Especiais</strong> são personagens 1/1 (5 de cada time). São fracos em combate, mas
-            reunir os 5 de um time na mão vence a partida.
           </li>
           <li>
             <strong>Suporte</strong>: aumenta um atributo dos seus personagens de um tipo e reduz um
@@ -120,7 +112,6 @@ export function Rules() {
         <h2>Fim da partida</h2>
         <ul>
           <li>Os pontos de vida de um jogador chegam a zero.</li>
-          <li>Um jogador reúne na mão as 5 cartas especiais de um time.</li>
           <li>
             Chega ao fim o turno {MAX_TURNS}: vence quem tem mais vida (vida igual é empate).
           </li>

@@ -9,8 +9,6 @@ import './GameCards.css'
  */
 export type CardState = 'idle' | 'playable' | 'selected' | 'target' | 'targeted' | 'dim'
 
-const SPECIAL_EFFECT = 'Ao ser revelada, remove todas as cartas do oponente da arena.'
-
 type CardProps = {
   card: CharacterCard
   /** Current stats when on the field; defaults to the printed ones. */
@@ -32,8 +30,8 @@ export function CharacterCardView({
 }: CardProps) {
   const atk = attack ?? card.attack
   const res = resistance ?? card.resistance
-  const className = `game-card game-card-${card.team} is-${state}${card.special ? ' is-special' : ''}`
-  const label = `${card.name}, força ${atk}, resistência ${res}${card.special ? ', carta especial' : ''}`
+  const className = `game-card game-card-${card.team} is-${state}`
+  const label = `${card.name}, força ${atk}, resistência ${res}`
   const body = (
     <>
       <span className="game-card-frame">
@@ -41,12 +39,6 @@ export function CharacterCardView({
           <span className="game-card-art">
             <img src={card.image} alt="" loading="lazy" />
             <span className="game-card-category">{CATEGORY_LABELS[card.category]}</span>
-            {card.special && (
-              <span className="game-card-special" title={SPECIAL_EFFECT}>
-                <StarIcon />
-                <span>Especial</span>
-              </span>
-            )}
           </span>
           <span className="game-card-name">{card.name}</span>
           <span className="game-card-stats">
@@ -73,7 +65,7 @@ export function CharacterCardView({
   )
   if (!onSelect) {
     return (
-      <div className={className} role="img" aria-label={label} title={card.special ? SPECIAL_EFFECT : undefined}>
+      <div className={className} role="img" aria-label={label}>
         {body}
       </div>
     )
@@ -125,14 +117,6 @@ function Effect({ mod, up }: { mod: StatModifier; up?: boolean }) {
         </span>
       </span>
     </span>
-  )
-}
-
-function StarIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="m12 2 2.9 6.6 7.1.6-5.4 4.7 1.6 7.1L12 17.3 5.8 21l1.6-7.1L2 9.2l7.1-.6z" />
-    </svg>
   )
 }
 

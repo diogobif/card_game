@@ -23,8 +23,6 @@ export type CharacterCard = {
   team: Team
   attack: number
   resistance: number
-  // 2 per team: when revealed, removes all of the opponent's cards from the arena.
-  special: boolean
   image: string
 }
 

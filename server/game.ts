@@ -230,7 +230,6 @@ function canPlay(p: PlayerState): boolean {
 
 function reveal(game: Game) {
   const played: (FieldCard | null)[] = []
-  const specialPlayers: PlayerState[] = []
   for (const p of game.players) {
     const choice = p.choice
     if (!choice) {
@@ -248,7 +247,6 @@ function reveal(game: Game) {
     p.field.push(placed)
     played.push(placed)
     addLog(game, `${p.player.name} jogou ${choice.card.name}.`)
-    if (choice.card.special) specialPlayers.push(p)
     if (choice.useSupport) {
       p.supportUsed = true
       game.turnSupports.push({ playerId: p.player.id, support: p.support })
@@ -257,15 +255,6 @@ function reveal(game: Game) {
     const drawn = p.deck.shift()
     if (drawn) p.hand.push(drawn)
   }
-  // A revealed special clears the opponent's arena, including the card they just played.
-  // Cards are placed first, so two specials in the same turn clear both arenas.
-  for (const p of specialPlayers) {
-    const foe = game.players.find((s) => s !== p)!
-    if (foe.field.length === 0) continue
-    foe.field = []
-    addLog(game, `Carta especial de ${p.player.name} limpou a arena de ${foe.player.name}!`)
-  }
-
   if (game.attacker === null) {
     // First attack goes to whoever revealed the stronger card; ties are random.
     const [a, b] = played.map((f) => (f ? f.attack : -1))
