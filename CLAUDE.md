@@ -24,7 +24,7 @@ The game engine is `server/game.ts`: the server is authoritative and sends each 
 
 Server rules worth knowing: a match is created by an accepted direct invite or by an invite link (a match with one player waiting). Players are identified by `player.id`, not by socket, so a reload rejoins the same match. A player offline for 60s has their matches ended. Players on the same team may play each other.
 
-In dev, Vite proxies `/ws` to the game server on port 3001 (`vite.config.ts`). In production the game server is the only process: one HTTP server (`PORT`, default 3001) serves the built `dist/` with SPA fallback (`server/static.ts`), answers `/healthz`, and upgrades `/ws`. The `Dockerfile` builds the client and runs `node server/index.ts` (no server build step). State is in memory, so run a single replica.
+In dev, Vite proxies `/ws` to the game server on port 3001 (`vite.config.ts`). In production the game server is the only process: one HTTP server (`PORT`, default 3001) serves the built `dist/` with SPA fallback (`server/static.ts`), answers `/healthz`, and upgrades `/ws`. The `Dockerfile` builds the client and runs `node server/index.ts` (no server build step). State is in memory, so run a single replica. Pushing to `main` deploys to the VPS via GitHub Actions (`.github/workflows/deploy.yml`: check, build and push the image to GHCR, then SSH + `docker compose` with `deploy/compose.yaml`); setup and rollback are in `deploy/README.md`.
 
 ## Stack
 

@@ -1,0 +1,10 @@
+# Production compose file, copied to the server by .github/workflows/deploy.yml.
+# It runs the image CI pushed to GHCR instead of building locally (see ../docker-compose.yml for that).
+# IMAGE is set by the deploy job; PORT can be overridden in a .env file next to this one.
+# Bound to localhost only: the server's Caddy is the public entry point (HTTPS + WebSockets).
+services:
+  card-game:
+    image: ${IMAGE:-ghcr.io/diogobif/card_game:latest}
+    ports:
+      - "127.0.0.1:${PORT:-3001}:3001"
+    restart: unless-stopped
