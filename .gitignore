@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local AI/design tooling (third-party, not part of the app)
+.claude/
+.cursor/
+.impeccable/

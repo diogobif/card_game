@@ -32,9 +32,15 @@ Optional: to serve on a port other than 3001, create `~/cartas-da-discordia/.env
 
 ### HTTPS with the server's Caddy
 
-The public entry point is the Caddy container of the `getavet` stack already on the VPS (its Caddyfile lives in that app's folder). The game container joins that stack's Docker network (`getavet_internal`, override with `PROXY_NETWORK` in the server's `.env`) under the alias `cartas-da-discordia`; its own port is bound to `127.0.0.1` only, for the deploy health check.
+The public entry point is a Caddy reverse proxy already running in Docker on the VPS (possibly as part of another app's compose stack). The game container joins Caddy's Docker network, named by the `PROXY_NETWORK` variable (see below), under the alias `cartas-da-discordia`; its own port is bound to `127.0.0.1` only, for the deploy health check.
 
-Point the subdomain's DNS at the VPS (an `A` record, e.g. name `cartas`, value the VPS IP), then add a site block to that Caddyfile and reload Caddy:
+Find the network name on the server with:
+
+```sh
+docker inspect <caddy-container> --format '{{range $n, $_ := .NetworkSettings.Networks}}{{$n}} {{end}}'
+```
+
+Point the subdomain's DNS at the VPS (an `A` record, e.g. name `cartas`, value the VPS IP), then add a site block to the Caddyfile and reload Caddy:
 
 ```caddy
 cartas.example.com {
@@ -43,12 +49,12 @@ cartas.example.com {
 ```
 
 ```sh
-docker exec getavet-caddy-1 caddy reload --config /etc/caddy/Caddyfile
+docker exec <caddy-container> caddy reload --config /etc/caddy/Caddyfile
 ```
 
 Caddy gets the certificate itself and proxies the `/ws` WebSocket with no extra config.
 
-The network belongs to the getavet stack: if that stack is taken down and recreated, redeploy this app (or `docker compose up -d` here) so it rejoins the new network.
+If Caddy's network is owned by another compose stack and that stack is taken down and recreated, redeploy this app (or `docker compose up -d` here) so it rejoins the new network.
 
 ### 2. GitHub secrets
 
@@ -61,7 +67,12 @@ In the repo: **Settings > Secrets and variables > Actions > New repository secre
 | `DEPLOY_SSH_KEY` | the full contents of the private key file `deploy_key`   |
 | `DEPLOY_PORT`    | optional, SSH port if it isn't 22                        |
 
-Optional variable (**Variables** tab): `DEPLOY_PATH`, the folder on the server, relative to the user's home. Default: `cartas-da-discordia`.
+Variables (**Variables** tab, next to Secrets; not shown publicly either):
+
+| Variable        | Value                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| `PROXY_NETWORK` | required: Caddy's Docker network (alternatively set `PROXY_NETWORK=...` in the server's `.env`) |
+| `DEPLOY_PATH`   | optional: folder on the server, relative to the user's home. Default: `cartas-da-discordia`  |
 
 Delete the local `deploy_key` files once the secret is saved.
 

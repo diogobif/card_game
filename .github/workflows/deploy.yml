@@ -83,17 +83,20 @@ jobs:
           IMAGE_TAG: ${{ env.IMAGE }}:${{ github.sha }}
           GHCR_USER: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROXY_NETWORK: ${{ vars.PROXY_NETWORK }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
-          envs: IMAGE_TAG,GHCR_USER,GHCR_TOKEN,DEPLOY_PATH
+          envs: IMAGE_TAG,GHCR_USER,GHCR_TOKEN,DEPLOY_PATH,PROXY_NETWORK
           script: |
             set -eu
             cd "$DEPLOY_PATH"
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
             export IMAGE="$IMAGE_TAG"
+            # Unset means compose falls back to PROXY_NETWORK in the server's .env.
+            if [ -n "$PROXY_NETWORK" ]; then export PROXY_NETWORK; else unset PROXY_NETWORK; fi
             docker compose pull
             docker compose up -d --remove-orphans
             docker logout ghcr.io

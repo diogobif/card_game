@@ -1,10 +1,11 @@
 # Production compose file, copied to the server by .github/workflows/deploy.yml.
 # It runs the image CI pushed to GHCR instead of building locally (see ../docker-compose.yml for that).
-# IMAGE is set by the deploy job; PORT and PROXY_NETWORK can be overridden in a .env file next to this one.
+# IMAGE is set by the deploy job. PROXY_NETWORK comes from the repo's Actions variable of the same
+# name (or a .env file next to this one); PORT can be overridden in that .env too.
 #
-# The public entry point is the Caddy container of another stack on the server. The app joins
-# that stack's network so Caddy can reach it as `cartas-da-discordia:3001`. The localhost port
-# is only for the deploy health check.
+# The public entry point is a reverse proxy (Caddy) running in Docker on the server. The app joins
+# the proxy's network so it can reach it as `cartas-da-discordia:3001`. The localhost port is only
+# for the deploy health check.
 services:
   card-game:
     image: ${IMAGE:-ghcr.io/diogobif/card_game:latest}
@@ -19,4 +20,4 @@ services:
 networks:
   proxy:
     external: true
-    name: ${PROXY_NETWORK:-getavet_internal}
+    name: ${PROXY_NETWORK:?set PROXY_NETWORK to the reverse proxy's Docker network}
