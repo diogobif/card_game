@@ -198,8 +198,11 @@ export function GameBoard({ game, send }: Props) {
 
   return (
     <main className="board">
+      {/* The arena scene, faded behind the whole board. */}
+      <div className="board-backdrop" aria-hidden="true" style={{ backgroundImage: `url(${game.arena.image})` }} />
       <header className="board-top panel">
         <div className="board-arena">
+          <img className="board-arena-art" src={game.arena.image} alt="" />
           <strong>{game.arena.name}</strong>{' '}
           {game.arena.favors ? (
             <span className={`team-badge team-badge-${game.arena.favors}`}>

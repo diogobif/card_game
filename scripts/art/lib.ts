@@ -223,9 +223,9 @@ export function rng(seed: string): () => number {
   }
 }
 
-export function svg(ctx: Ctx, body: string): string {
+export function svg(ctx: Ctx, body: string, w = W, h = H): string {
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">` +
     defsBlock(ctx) +
     body +
     '</svg>\n'

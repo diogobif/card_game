@@ -1,8 +1,9 @@
-// Draws every card illustration into public/images/<id>.svg.
+// Draws every card illustration into public/images/<id>.svg, and each arena into arena-<id>.svg.
 // Run with: node scripts/generate-art.ts
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { CHARACTERS, SUPPORTS } from '../shared/cards.ts'
+import { ARENAS, CHARACTERS, SUPPORTS } from '../shared/cards.ts'
+import { drawArena } from './art/arenas.ts'
 import { drawCharacter, type Character } from './art/character.ts'
 import { circle, ellipse, g, INK, line, lit, newCtx, rect, shape, svg, text } from './art/lib.ts'
 import { extra } from './art/props.ts'
@@ -408,6 +409,10 @@ for (const card of CHARACTERS) {
 }
 for (const card of SUPPORTS) {
   writeFileSync(join(OUT_DIR, `${card.id}.svg`), drawSupport(card.id))
+  written++
+}
+for (const arena of ARENAS) {
+  writeFileSync(join(OUT_DIR, `arena-${arena.id}.svg`), drawArena(arena.id))
   written++
 }
 console.log(`Wrote ${written} images to ${OUT_DIR}`)

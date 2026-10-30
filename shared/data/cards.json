@@ -565,34 +565,34 @@
   ],
   "arenas": [
     {
-      "id": "planicie-neutra",
-      "name": "Planície Neutra",
+      "id": "almoco-de-domingo-em-familia",
+      "name": "Almoço de Domingo em Família",
       "favors": null,
-      "image": "https://placehold.co/640x360/4b5563/ffffff?text=Plan%C3%ADcie+Neutra"
+      "image": "/images/arena-almoco-de-domingo-em-familia.svg"
     },
     {
-      "id": "vulcao-ardente",
-      "name": "Vulcão Ardente",
+      "id": "bar-da-vila-madalena",
+      "name": "Bar da Vila Madalena",
       "favors": "red",
-      "image": "https://placehold.co/640x360/b91c1c/ffffff?text=Vulc%C3%A3o+Ardente"
+      "image": "/images/arena-bar-da-vila-madalena.svg"
     },
     {
-      "id": "forja-escarlate",
-      "name": "Forja Escarlate",
+      "id": "sarau-na-ocupacao",
+      "name": "Sarau na Ocupação",
       "favors": "red",
-      "image": "https://placehold.co/640x360/b91c1c/ffffff?text=Forja+Escarlate"
+      "image": "/images/arena-sarau-na-ocupacao.svg"
     },
     {
-      "id": "geleira-eterna",
-      "name": "Geleira Eterna",
+      "id": "porta-do-quartel",
+      "name": "Porta do Quartel",
       "favors": "blue",
-      "image": "https://placehold.co/640x360/1d4ed8/ffffff?text=Geleira+Eterna"
+      "image": "/images/arena-porta-do-quartel.svg"
     },
     {
-      "id": "templo-das-mares",
-      "name": "Templo das Marés",
+      "id": "camarote-do-agro",
+      "name": "Camarote do Agro",
       "favors": "blue",
-      "image": "https://placehold.co/640x360/1d4ed8/ffffff?text=Templo+das+Mar%C3%A9s"
+      "image": "/images/arena-camarote-do-agro.svg"
     }
   ]
 }

@@ -23,6 +23,48 @@
   color: var(--text-h);
 }
 
+.board-arena {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+}
+
+.board-arena-art {
+  width: 96px;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  object-fit: cover;
+}
+
+/* Fixed behind everything: the scene is clearest at the top and fades into the page background
+   further down. The blur keeps its details (and its text) from competing with the board. */
+.board-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--bg);
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  /* Hides the soft edges the blur leaves at the viewport border. */
+  transform: scale(1.04);
+}
+
+.board-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bg) 40%, transparent),
+    color-mix(in srgb, var(--bg) 82%, transparent) 40%,
+    color-mix(in srgb, var(--bg) 92%, transparent)
+  );
+}
+
 .board-top-stats {
   display: flex;
   align-items: center;
@@ -825,6 +867,10 @@
 
   .board-top {
     padding: 12px 16px;
+  }
+
+  .board-arena-art {
+    width: 72px;
   }
 
   /* Keep the dock short so the arena stays visible above it. */
