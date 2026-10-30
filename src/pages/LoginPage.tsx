@@ -54,8 +54,8 @@ export function LoginPage() {
         <section className="login-intro">
           <Logo size="lg" as="h1" />
           <p className="login-tagline">
-            Um jogo de cartas por turnos para dois jogadores. Sem cadastro: escolha um nome e um time e
-            comece a jogar.
+            <strong>Vermelho contra azul, carta contra carta.</strong> Um duelo por turnos para dois
+            jogadores. Sem cadastro: escolha um nome e um lado e comece a briga.
           </p>
         </section>
 

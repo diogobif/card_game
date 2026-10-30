@@ -81,7 +81,7 @@ export function HomePage() {
 
   function shareLink() {
     if (!inviteLink) return
-    navigator.share({ title: 'Card Game', text: 'Vem jogar comigo!', url: inviteLink }).catch(() => {
+    navigator.share({ title: 'Cartas da Discórdia', text: 'Vem jogar comigo!', url: inviteLink }).catch(() => {
       // Share sheet closed: nothing to do.
     })
   }

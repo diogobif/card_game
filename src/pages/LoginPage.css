@@ -1,8 +1,12 @@
+/* The two teams glow from opposite corners, like the halves of the logo. */
 .login {
   min-height: 100svh;
   display: grid;
   place-items: center;
   padding: 32px 16px;
+  background:
+    radial-gradient(60% 50% at 0% 0%, var(--team-red-bg), transparent 70%),
+    radial-gradient(60% 50% at 100% 100%, var(--team-blue-bg), transparent 70%);
 }
 
 /* Desktop: intro and steps on the left, the form on the right. Phones: one column. */
@@ -31,6 +35,12 @@
   margin: 0;
   max-width: 460px;
   font-size: 1.2rem;
+  text-wrap: pretty;
+}
+
+.login-tagline strong {
+  display: block;
+  color: var(--text-h);
 }
 
 .login-steps {
@@ -344,13 +354,25 @@
     border-radius: 16px;
   }
 
-  .logo-lg .logo-name {
-    font-size: 2rem;
+  .logo-lg {
+    gap: 12px;
   }
 
-  .logo-lg .logo-cards span {
-    width: 28px;
-    height: 40px;
+  .logo-lg .logo-mark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .logo-lg .logo-kicker {
+    font-size: 0.75rem;
+  }
+
+  .logo-lg .logo-title {
+    font-size: 2.4rem;
+  }
+
+  .login-intro .logo-name {
+    text-align: left;
   }
 
   .login-steps {
