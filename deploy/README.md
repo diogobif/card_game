@@ -32,15 +32,23 @@ Optional: to serve on a port other than 3001, create `~/cartas-da-discordia/.env
 
 ### HTTPS with the server's Caddy
 
-The container listens only on `127.0.0.1:3001`; the Caddy already running on the VPS is the public entry point. Point the subdomain's DNS at the VPS (an `A` record, e.g. name `cartas`, value the VPS IP), then add a site block to the Caddyfile and reload Caddy:
+The public entry point is the Caddy container of the `getavet` stack already on the VPS (its Caddyfile lives in that app's folder). The game container joins that stack's Docker network (`getavet_internal`, override with `PROXY_NETWORK` in the server's `.env`) under the alias `cartas-da-discordia`; its own port is bound to `127.0.0.1` only, for the deploy health check.
+
+Point the subdomain's DNS at the VPS (an `A` record, e.g. name `cartas`, value the VPS IP), then add a site block to that Caddyfile and reload Caddy:
 
 ```caddy
 cartas.example.com {
-	reverse_proxy 127.0.0.1:3001
+	reverse_proxy cartas-da-discordia:3001
 }
 ```
 
-Caddy gets the certificate itself and proxies the `/ws` WebSocket with no extra config. If Caddy runs in Docker rather than on the host, `127.0.0.1` is Caddy's own container: put both containers on a shared Docker network and use `reverse_proxy card-game:3001` instead.
+```sh
+docker exec getavet-caddy-1 caddy reload --config /etc/caddy/Caddyfile
+```
+
+Caddy gets the certificate itself and proxies the `/ws` WebSocket with no extra config.
+
+The network belongs to the getavet stack: if that stack is taken down and recreated, redeploy this app (or `docker compose up -d` here) so it rejoins the new network.
 
 ### 2. GitHub secrets
 
