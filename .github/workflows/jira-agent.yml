@@ -32,7 +32,6 @@ jobs:
     env:
       ISSUE_KEY: ${{ inputs.issue_key }}
       BRANCH: agent/${{ inputs.issue_key }}
-      RESULT_PATH: ${{ runner.temp }}/agent-result.json
     steps:
       - name: Validate issue key
         id: validate
@@ -41,6 +40,9 @@ jobs:
             echo "Invalid issue key: '$ISSUE_KEY'" >&2
             exit 1
           fi
+          # The runner context isn't available in job-level env, so set the path here.
+          # Outside the checkout, so the result file is never committed.
+          echo "RESULT_PATH=$RUNNER_TEMP/agent-result.json" >> "$GITHUB_ENV"
 
       - name: Skip if a branch already exists for this ticket
         id: existing
