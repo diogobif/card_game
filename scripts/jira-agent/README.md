@@ -4,11 +4,13 @@ When a Jira ticket is created, a LangChain agent running Claude (`claude-opus-5-
 
 ```
 Jira "issue created" ──► GitHub workflow_dispatch ──► .github/workflows/jira-agent.yml
+   0. move the ticket to "Fazendo"                    move.ts
    1. fetch ticket (summary + description)            jira.ts
    2. agent investigates + edits code, runs checks   index.ts, tools.ts
    3. CI re-checks: protected files, lint, build, test   paths.ts, checks.ts (no secrets in env)
    4. all green → branch agent/<KEY> + PR             workflow
-   5. comment on the ticket (PR link or reason)       notify.ts
+   5. comment on the ticket (PR link or reason),      notify.ts
+      move it to "Revisão" (PR) or "Falha no agente" (anything else)
 ```
 
 **Only a human merges.** The agent itself never commits or pushes. The workflow only pushes a new `agent/<KEY>` branch and opens a PR; it never pushes to `main`, merges, approves or deploys. You review and merge the PR, and that merge is what deploys (`deploy.yml` runs on push to `main`). GitHub enforces this with the `main` ruleset below, so it holds even if the workflow code is changed.
@@ -24,6 +26,11 @@ Jira "issue created" ──► GitHub workflow_dispatch ──► .github/workfl
 | `JIRA_TOKEN` | secret | API token for that account (id.atlassian.com → Security → API tokens) |
 | `JIRA_URL` | secret | e.g. `https://your-site.atlassian.net` |
 | `AGENT_MODEL` | variable, optional | Override the model (default `claude-opus-5-5`) |
+| `JIRA_WORKING_STATUS` | variable, optional | Status the ticket moves to when the agent starts (default `Fazendo`) |
+| `JIRA_REVIEW_STATUS` | variable, optional | Status the ticket moves to when a PR was opened (default `Revisão`) |
+| `JIRA_FAILURE_STATUS` | variable, optional | Status the ticket moves to when no PR was opened: the ticket breaks a business rule, can't be implemented or is unclear, checks failed, nothing changed, or the run errored (default `Falha no agente`) |
+
+Status names ignore accents and case. The Jira workflow must allow those transitions, and the Jira account needs the "Transition issues" permission; a failed move is only a warning on the run.
 
 Also enable **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**, or `gh pr create` fails. (GitHub only offers create and approve as one setting; the workflow never approves, and a bot can't approve its own PR.)
 
@@ -60,6 +67,12 @@ export ANTHROPIC_API_KEY=... JIRA_URL=... JIRA_EMAIL=... JIRA_TOKEN=...
 pnpm agent:jira CG-12          # edits your working tree; writes agent-result.json
 pnpm check                     # the same gate CI runs
 ```
+
+## Business rules
+
+Before editing, the agent checks the ticket against the game rules and technical rules in `CLAUDE.md` ("Card game" section). Those rules only change by a human decision: if a ticket would contradict any of them (say, starting with 30 life points or 4 characters in the arena), the agent implements nothing and finishes as blocked. The same happens when the ticket can't be built here or is unclear. The ticket then gets a comment in Portuguese with the reason (quoting the rule) and moves to "Falha no agente".
+
+To change a rule on purpose, edit `CLAUDE.md` first; the agent follows the version on `main`.
 
 ## Safety
 

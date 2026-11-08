@@ -65,6 +65,15 @@ jobs:
         with:
           node-version: 22
 
+      # Shows on the board that the agent is working on it (no npm deps needed).
+      - name: Move ticket to the in-progress status
+        if: steps.existing.outputs.skip != 'true'
+        env:
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+        run: node scripts/jira-agent/move.ts "$ISSUE_KEY" "${{ vars.JIRA_WORKING_STATUS || 'Fazendo' }}"
+
       - name: Install dependencies
         if: steps.existing.outputs.skip != 'true'
         run: |
@@ -135,6 +144,8 @@ jobs:
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
           PR_URL: ${{ steps.pr.outputs.url }}
+          JIRA_REVIEW_STATUS: ${{ vars.JIRA_REVIEW_STATUS }}
+          JIRA_FAILURE_STATUS: ${{ vars.JIRA_FAILURE_STATUS }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           OUTCOME: >-
             ${{ steps.pr.outputs.url && 'pr'

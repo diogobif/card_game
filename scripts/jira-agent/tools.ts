@@ -8,8 +8,13 @@ import { z } from 'zod'
 import { formatResults, runChecks } from './checks.ts'
 import { ROOT, canRead, canWrite, toRepoPath } from './paths.ts'
 
+export const BLOCK_REASONS = ['business-rule', 'not-feasible', 'unclear'] as const
+export type BlockReason = (typeof BLOCK_REASONS)[number]
+
 export type AgentResult = {
   status: 'done' | 'blocked'
+  /** Set when status is 'blocked'. */
+  blockReason?: BlockReason
   prTitle: string
   summary: string
   checksPassed: boolean
@@ -161,23 +166,40 @@ export function createTools(state: { result?: AgentResult; checksPassed: boolean
   )
 
   const finish = tool(
-    ({ status, pr_title, summary }) => {
+    ({ status, block_reason, pr_title, summary }) => {
       if (status === 'done' && !state.checksPassed) {
         throw new Error('Checks have not passed since your last edit. Call run_checks and fix any failure first.')
       }
-      state.result = { status, prTitle: pr_title, summary, checksPassed: state.checksPassed }
+      if (status === 'blocked' && !block_reason) {
+        throw new Error('A blocked finish needs a block_reason: business-rule, not-feasible or unclear.')
+      }
+      state.result = {
+        status,
+        blockReason: status === 'blocked' ? block_reason : undefined,
+        prTitle: pr_title,
+        summary,
+        checksPassed: state.checksPassed,
+      }
       return 'Recorded. Stop now.'
     },
     {
       name: 'finish',
       description:
-        'Call exactly once at the end. status "done" when the change is complete and run_checks passed after your last edit; "blocked" when the ticket is unclear, out of scope or needs a protected file.',
+        'Call exactly once at the end. status "done" when the change is complete and run_checks passed after your last edit; "blocked" (with a block_reason) when the ticket breaks a business rule, can\'t be implemented, or is unclear.',
       schema: z.object({
         status: z.enum(['done', 'blocked']),
+        block_reason: z
+          .enum(BLOCK_REASONS)
+          .optional()
+          .describe(
+            'Required when blocked. business-rule: contradicts the game or technical rules in CLAUDE.md. not-feasible: can\'t be built here (database, external service, new dependency, protected file, checks that can\'t pass). unclear: the request can\'t be understood.',
+          ),
         pr_title: z.string().describe('Short PR title in English, without the ticket key'),
         summary: z
           .string()
-          .describe('Markdown for the PR body: what changed and why, files touched, how to test manually. If blocked, explain why.'),
+          .describe(
+            'If done: Markdown PR body (what changed and why, files touched, how to test manually). If blocked: a comment for the ticket author in Portuguese (pt-BR): what was asked, why it can\'t be done (quote the rule when it is a business rule), and what would make it possible.',
+          ),
       }),
     },
   )

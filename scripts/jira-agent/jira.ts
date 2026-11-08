@@ -68,3 +68,50 @@ export async function addComment(key: string, body: string): Promise<void> {
   })
   if (!res.ok) throw new Error(`Jira comment on ${key} failed: ${res.status} ${await res.text()}`)
 }
+
+// "Revisão", "revisao" and "REVISÃO" all match.
+function sameName(a: string, b: string): boolean {
+  const norm = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').trim().toLowerCase()
+  return norm(a) === norm(b)
+}
+
+/**
+ * Moves the issue to the status with this name, using whichever workflow
+ * transition leads there from its current status. Returns false when it is
+ * already in that status.
+ */
+export async function moveToStatus(key: string, status: string): Promise<boolean> {
+  const path = `/rest/api/2/issue/${encodeURIComponent(key)}`
+  const issueRes = await jiraRequest(`${path}?fields=status`)
+  if (!issueRes.ok) throw new Error(`Jira GET ${key} failed: ${issueRes.status} ${await issueRes.text()}`)
+  const issue = (await issueRes.json()) as { fields: { status?: { name?: string } } }
+  if (sameName(issue.fields.status?.name ?? '', status)) return false
+
+  const listRes = await jiraRequest(`${path}/transitions`)
+  if (!listRes.ok) throw new Error(`Jira transitions of ${key} failed: ${listRes.status} ${await listRes.text()}`)
+  const { transitions } = (await listRes.json()) as { transitions: { id: string; name: string; to: { name: string } }[] }
+  const transition = transitions.find((t) => sameName(t.to.name, status))
+  if (!transition) {
+    const available = transitions.map((t) => `"${t.to.name}"`).join(', ') || 'none'
+    throw new Error(
+      `No transition from "${issue.fields.status?.name}" to "${status}" for ${key}. Available: ${available}`,
+    )
+  }
+
+  const res = await jiraRequest(`${path}/transitions`, {
+    method: 'POST',
+    body: JSON.stringify({ transition: { id: transition.id } }),
+  })
+  if (!res.ok) throw new Error(`Jira transition of ${key} failed: ${res.status} ${await res.text()}`)
+  return true
+}
+
+/** moveToStatus that never throws: a failed move shows as a warning on the Actions run. */
+export async function tryMoveToStatus(key: string, status: string): Promise<void> {
+  try {
+    const moved = await moveToStatus(key, status)
+    console.log(moved ? `Moved ${key} to "${status}"` : `${key} is already in "${status}"`)
+  } catch (error) {
+    console.log(`::warning::Could not move ${key} to "${status}": ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
