@@ -120,7 +120,7 @@ export function LoginPage() {
           </button>
           {/* New tab, so the form and any pending invite redirect survive. */}
           <a href="/regras" target="_blank" rel="noopener" className="login-rules">
-            ma oe
+            Regras do jogo
           </a>
         </form>
 
