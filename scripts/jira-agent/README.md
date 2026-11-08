@@ -3,7 +3,7 @@
 When a Jira ticket is created, a LangChain agent running Claude (`claude-opus-5-5`) implements it and opens a PR for review.
 
 ```
-Jira "issue created" ──► GitHub repository_dispatch ──► .github/workflows/jira-agent.yml
+Jira "issue created" ──► GitHub workflow_dispatch ──► .github/workflows/jira-agent.yml
    1. fetch ticket (summary + description)            jira.ts
    2. agent investigates + edits code, runs checks   index.ts, tools.ts
    3. CI re-checks: protected files, lint, build, test   paths.ts, checks.ts (no secrets in env)
@@ -11,7 +11,7 @@ Jira "issue created" ──► GitHub repository_dispatch ──► .github/work
    5. comment on the ticket (PR link or reason)       notify.ts
 ```
 
-The agent never commits, pushes or merges. You review and merge the PR; merging to `main` deploys as usual.
+**Only a human merges.** The agent itself never commits or pushes. The workflow only pushes a new `agent/<KEY>` branch and opens a PR; it never pushes to `main`, merges, approves or deploys. You review and merge the PR, and that merge is what deploys (`deploy.yml` runs on push to `main`). GitHub enforces this with the `main` ruleset below, so it holds even if the workflow code is changed.
 
 ## Setup
 
@@ -25,22 +25,30 @@ The agent never commits, pushes or merges. You review and merge the PR; merging 
 | `JIRA_URL` | secret | e.g. `https://your-site.atlassian.net` |
 | `AGENT_MODEL` | variable, optional | Override the model (default `claude-opus-5-5`) |
 
-Also enable **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**, or `gh pr create` fails.
+Also enable **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**, or `gh pr create` fails. (GitHub only offers create and approve as one setting; the workflow never approves, and a bot can't approve its own PR.)
 
-### 2. Jira Automation rule
+### 2. Protect `main` (Settings → Rules → Rulesets → New branch ruleset)
+
+- Name `main`, enforcement **Active**, target **Default branch**.
+- Bypass list: **Repository admin** only (you can still push to `main` directly as before).
+- Rules: **Restrict deletions**, **Block force pushes**, **Require a pull request before merging** with **1 required approval**.
+
+Everyone outside the bypass list, including the `github-actions[bot]` token the workflow uses, can then neither push to `main` nor merge a PR without a human approval, and the bot can't approve its own PRs.
+
+### 3. Jira Automation rule
 
 Project settings → Automation → Create rule:
 
 - **Trigger:** Issue created (add a condition such as a label or issue type if only some tickets should go to the agent).
 - **Action:** Send web request
-  - URL: `https://api.github.com/repos/diogobif/card_game/dispatches`
+  - URL: `https://api.github.com/repos/diogobif/card_game/actions/workflows/jira-agent.yml/dispatches`
   - Method: `POST`
   - Headers:
-    - `Authorization`: `Bearer <fine-grained GitHub PAT>` (this repo only, permission **Contents: Read and write**)
+    - `Authorization`: `Bearer <fine-grained GitHub PAT>` (this repo only, permission **Actions: Read and write**, nothing else; it can start workflows but can't read or push code)
     - `Accept`: `application/vnd.github+json`
   - Body (custom data):
     ```json
-    { "event_type": "jira-issue-created", "client_payload": { "issue_key": "{{issue.key}}" } }
+    { "ref": "main", "inputs": { "issue_key": "{{issue.key}}" } }
     ```
 
 To try it without Jira Automation: Actions → Jira agent → Run workflow → enter an issue key.
@@ -64,4 +72,4 @@ Anyone who can create tickets can steer the agent, so:
 
 ## Tests
 
-`checks.ts` runs `pnpm lint` and `pnpm build`, plus `pnpm test` as soon as a `test` script exists in `package.json`. The project has no test framework yet, so for now "tests" means lint + type-check + production build.
+`checks.ts` runs `pnpm lint`, `pnpm build` (type-check + production build) and `pnpm test` (Vitest: game engine, combat, card data and component tests). A PR is only opened when all of them pass.

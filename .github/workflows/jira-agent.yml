@@ -1,11 +1,13 @@
 # New Jira ticket -> LangChain agent implements it -> checks -> pull request.
-# Jira Automation fires a repository_dispatch (see scripts/jira-agent/README.md);
-# it can also be started by hand from the Actions tab.
+# Jira Automation starts it through the workflow_dispatch API (see
+# scripts/jira-agent/README.md); it can also be started from the Actions tab.
+#
+# This workflow ONLY opens a pull request from an agent/<KEY> branch. It never
+# pushes to main, merges, approves or deploys. Merging is a human decision, and
+# the main-branch ruleset makes that a GitHub-enforced rule, not just a convention.
 name: Jira agent
 
 on:
-  repository_dispatch:
-    types: [jira-issue-created]
   workflow_dispatch:
     inputs:
       issue_key:
@@ -14,9 +16,11 @@ on:
 
 # One run per ticket at a time.
 concurrency:
-  group: jira-agent-${{ github.event.client_payload.issue_key || inputs.issue_key }}
+  group: jira-agent-${{ inputs.issue_key }}
   cancel-in-progress: false
 
+# contents: push the agent/<KEY> branch. pull-requests: open the PR.
+# Nothing else (no actions, deployments or packages access).
 permissions:
   contents: write
   pull-requests: write
@@ -26,8 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      ISSUE_KEY: ${{ github.event.client_payload.issue_key || inputs.issue_key }}
-      BRANCH: agent/${{ github.event.client_payload.issue_key || inputs.issue_key }}
+      ISSUE_KEY: ${{ inputs.issue_key }}
+      BRANCH: agent/${{ inputs.issue_key }}
       RESULT_PATH: ${{ runner.temp }}/agent-result.json
     steps:
       - name: Validate issue key
@@ -109,10 +113,15 @@ jobs:
 
           git config user.name "jira-agent[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Only ever push a new agent/<KEY> branch: never main, never a force push.
+          if ! [[ "$BRANCH" =~ ^agent/[A-Z][A-Z0-9_]+-[0-9]+$ ]]; then
+            echo "Refusing to push to '$BRANCH'" >&2
+            exit 1
+          fi
           git checkout -b "$BRANCH"
           git add -A
           git commit -m "$TITLE"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" "$BRANCH"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" "HEAD:refs/heads/$BRANCH"
           URL=$(gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file "$RUNNER_TEMP/pr-body.md")
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "Opened $URL"

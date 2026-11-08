@@ -44,7 +44,11 @@ React 19, TypeScript 6, Vite 8 (Rolldown-based, `@vitejs/plugin-react`), oxlint.
 - `pnpm agent:jira <KEY>`: run the Jira ticket agent locally (LangChain + Claude, `scripts/jira-agent/`; the `.github/workflows/jira-agent.yml` workflow runs it on new tickets and opens a PR; setup in `scripts/jira-agent/README.md`)
 - `pnpm art`: redraw every card illustration into `public/images/<id>.svg` (generator in `scripts/art/`, cast list in `scripts/generate-art.ts`; a new card needs an entry there). Arena backdrops are drawn by `scripts/art/arenas.ts` into `public/images/arena-<id>.svg`; a new arena needs an entry in its `ARENA_ART` map
 
-No test framework is set up yet.
+- `pnpm test` / `pnpm test:watch`: Vitest, configured in `vite.config.ts` as two projects: `logic` (`server/**/*.test.ts`, `shared/**/*.test.ts`, Node) and `components` (`src/**/*.test.{ts,tsx}`, jsdom + React Testing Library, setup in `src/test/setup.ts`)
+
+## Tests
+
+Tests sit next to the code they cover (`server/game.test.ts`, `shared/combat.test.ts`, `src/pages/LoginPage.test.tsx`...). Engine tests use `vi.useFakeTimers()` to drive the 60s phase timers, set hands/fields directly on the `Game` object to avoid randomness, and call `disposeGame` afterwards. Component tests query by role and accessible name, so keep `aria-label`s meaningful. A game-rule change should come with a test; `shared/cards.test.ts` checks the card data still follows the deck rules.
 
 ## TypeScript constraints
 

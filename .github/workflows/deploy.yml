@@ -28,6 +28,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm exec tsc -b
+      - run: pnpm test
 
   image:
     needs: check
