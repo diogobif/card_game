@@ -13,7 +13,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "art": "node scripts/generate-art.ts"
+    "art": "node scripts/generate-art.ts",
+    "check": "node scripts/jira-agent/checks.ts",
+    "agent:jira": "node scripts/jira-agent/index.ts"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -22,14 +24,18 @@
     "ws": "^8.22.0"
   },
   "devDependencies": {
+    "@langchain/anthropic": "1.6.1",
+    "@langchain/core": "1.3.5",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@types/ws": "^8.18.2",
     "@vitejs/plugin-react": "^6.1.1",
     "concurrently": "^10.0.6",
+    "langchain": "1.6.3",
     "oxlint": "^1.81.0",
     "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "zod": "4.6.7"
   }
 }

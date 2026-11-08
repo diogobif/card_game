@@ -40,6 +40,8 @@ React 19, TypeScript 6, Vite 8 (Rolldown-based, `@vitejs/plugin-react`), oxlint.
 - `pnpm start`: production server (serves `dist/` + WebSocket; run `pnpm build` first)
 - `docker compose up --build`: build and run the production image on port 3001
 - `pnpm exec tsc -b`: type-check only
+- `pnpm check`: the quality gate (lint + build, plus `pnpm test` once that script exists), shared by CI and the Jira agent
+- `pnpm agent:jira <KEY>`: run the Jira ticket agent locally (LangChain + Claude, `scripts/jira-agent/`; the `.github/workflows/jira-agent.yml` workflow runs it on new tickets and opens a PR; setup in `scripts/jira-agent/README.md`)
 - `pnpm art`: redraw every card illustration into `public/images/<id>.svg` (generator in `scripts/art/`, cast list in `scripts/generate-art.ts`; a new card needs an entry there). Arena backdrops are drawn by `scripts/art/arenas.ts` into `public/images/arena-<id>.svg`; a new arena needs an entry in its `ARENA_ART` map
 
 No test framework is set up yet.
