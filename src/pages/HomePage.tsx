@@ -92,7 +92,7 @@ export function HomePage() {
         <Logo />
         <nav className="app-bar-nav">
           <Link to="/regras" className="app-bar-link">
-            Como jogar
+            vamos jogar
           </Link>
           <span className="me-chip">
             <Avatar name={player.name} team={player.team} size="sm" />

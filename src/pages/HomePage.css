@@ -536,7 +536,7 @@
   }
 }
 
-/* Phones: the bar keeps the logo and your chip; "Como jogar" moves to the help card. */
+/* Phones: the bar keeps the logo and your chip; "vamos jogar" moves to the help card. */
 @media (max-width: 560px) {
   .app-bar {
     padding: 8px 12px;
