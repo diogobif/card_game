@@ -1,5 +1,6 @@
 /* The two teams glow from opposite corners, like the halves of the logo. */
 .login {
+  position: relative;
   min-height: 100svh;
   display: grid;
   place-items: center;
@@ -316,6 +317,13 @@
   opacity: 0.9;
 }
 
+/* Language switcher, pinned to the top corner. */
+.login-lang {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
 .login-rules {
   align-self: center;
   font-size: 0.9rem;
@@ -326,7 +334,8 @@
 @media (max-width: 860px) {
   .login {
     place-items: start center;
-    padding: 24px 16px 40px;
+    /* Top room for the language switcher. */
+    padding: 64px 16px 40px;
   }
 
   .login-layout {

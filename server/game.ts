@@ -19,6 +19,7 @@ import {
   type GamePhase,
   type GameResult,
   type GameView,
+  type LogEntry,
   type PlayedSupport,
 } from '../shared/game.ts'
 import type { Player } from '../shared/player.ts'
@@ -47,7 +48,7 @@ export type Game = {
   timer: ReturnType<typeof setTimeout> | undefined
   attacker: 0 | 1 | null
   turnSupports: PlayedSupport[]
-  log: string[]
+  log: LogEntry[]
   result: GameResult | null
   lastAttack: AttackEvent | null
   /** Called after every state change, so the server can push fresh views. */
@@ -85,7 +86,7 @@ export function createGame(matchId: string, players: Player[], onUpdate: (game: 
     lastAttack: null,
     onUpdate,
   }
-  addLog(game, `Arena: ${game.arena.name}.`)
+  addLog(game, { kind: 'arena', arena: game.arena.name })
   startChoosePhase(game)
   return game
 }
@@ -115,12 +116,7 @@ export function forfeit(
   const loser = game.players.find((p) => p.player.id === playerId)
   const winner = game.players.find((p) => p.player.id !== playerId)
   if (!loser || !winner) return
-  addLog(
-    game,
-    reason === 'forfeit'
-      ? `${loser.player.name} desistiu da partida.`
-      : `${loser.player.name} perdeu a partida por desconexão.`,
-  )
+  addLog(game, { kind: reason, player: loser.player.name })
   endGame(game, { winnerId: winner.player.id, reason })
 }
 
@@ -146,16 +142,22 @@ export function attack(
 
   if (!target) {
     damageLife(foe, outcome.lifeDamage)
-    addLog(game, `${attacker.card.name} atacou ${foe.player.name} diretamente (${outcome.power} de dano).`)
+    addLog(game, { kind: 'direct-attack', attacker: attacker.card.name, player: foe.player.name, damage: outcome.power })
   } else {
-    addLog(game, `${attacker.card.name} (${outcome.power}) atacou ${target.card.name} (${outcome.guard}).`)
+    addLog(game, {
+      kind: 'attack',
+      attacker: attacker.card.name,
+      power: outcome.power,
+      target: target.card.name,
+      guard: outcome.guard,
+    })
     if (outcome.attackerAttack === null) removeFromField(game, me, attacker)
     else attacker.attack = outcome.attackerAttack
     if (outcome.targetResistance === null) removeFromField(game, foe, target)
     else target.resistance = outcome.targetResistance
     if (outcome.lifeDamage > 0) {
       damageLife(foe, outcome.lifeDamage)
-      addLog(game, `${outcome.lifeDamage} de dano excedente em ${foe.player.name}.`)
+      addLog(game, { kind: 'excess-damage', player: foe.player.name, damage: outcome.lifeDamage })
     }
   }
 
@@ -180,7 +182,7 @@ export function attack(
 
 function removeFromField(game: Game, owner: PlayerState, card: FieldCard) {
   owner.field = owner.field.filter((f) => f !== card)
-  addLog(game, `${card.card.name} saiu da arena.`)
+  addLog(game, { kind: 'left-arena', card: card.card.name })
 }
 
 function damageLife(p: PlayerState, amount: number) {
@@ -210,14 +212,14 @@ function startChoosePhase(game: Game) {
       if (!p.choice && canPlay(p)) {
         const card = p.hand[Math.floor(Math.random() * p.hand.length)]
         p.choice = { card, useSupport: false }
-        addLog(game, `${p.player.name} não escolheu a tempo; carta aleatória.`)
+        addLog(game, { kind: 'auto-pick', player: p.player.name })
       }
     }
     reveal(game)
   })
   // Both arenas full: nobody places a card, go straight to the attack.
   if (!game.players.some(canPlay)) {
-    addLog(game, 'As duas arenas estão cheias; nenhuma carta foi jogada.')
+    addLog(game, { kind: 'arenas-full' })
     reveal(game)
     return
   }
@@ -246,11 +248,11 @@ function reveal(game: Game) {
     }
     p.field.push(placed)
     played.push(placed)
-    addLog(game, `${p.player.name} jogou ${choice.card.name}.`)
+    addLog(game, { kind: 'played', player: p.player.name, card: choice.card.name })
     if (choice.useSupport) {
       p.supportUsed = true
       game.turnSupports.push({ playerId: p.player.id, support: p.support })
-      addLog(game, `${p.player.name} usou o suporte ${p.support.name}.`)
+      addLog(game, { kind: 'support', player: p.player.name, support: p.support.name })
     }
     const drawn = p.deck.shift()
     if (drawn) p.hand.push(drawn)
@@ -265,13 +267,13 @@ function reveal(game: Game) {
 
   const attacker = game.players[game.attacker]
   if (attacker.field.length === 0) {
-    addLog(game, `${attacker.player.name} não tem personagens para atacar.`)
+    addLog(game, { kind: 'no-attackers', player: attacker.player.name })
     startChoosePhase(game)
     return
   }
   game.phase = 'attack'
   setPhaseTimer(game, () => {
-    addLog(game, `${attacker.player.name} não atacou a tempo.`)
+    addLog(game, { kind: 'attack-timeout', player: attacker.player.name })
     startChoosePhase(game)
   })
   game.onUpdate(game)
@@ -290,8 +292,8 @@ function setPhaseTimer(game: Game, onTimeout: () => void) {
   game.timer = setTimeout(onTimeout, TURN_TIME_MS)
 }
 
-function addLog(game: Game, line: string) {
-  game.log.push(line)
+function addLog(game: Game, entry: LogEntry) {
+  game.log.push(entry)
   if (game.log.length > LOG_SIZE) game.log.shift()
 }
 

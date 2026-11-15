@@ -1,6 +1,7 @@
 import type { Team } from '../../shared/player.ts'
-import { TEAM_LABELS } from '../player/teams.ts'
+import { useI18n } from '../i18n/I18nContext.ts'
 
 export function TeamBadge({ team }: { team: Team }) {
-  return <span className={`team-badge team-badge-${team}`}>{TEAM_LABELS[team]}</span>
+  const { t } = useI18n()
+  return <span className={`team-badge team-badge-${team}`}>{t.teams[team]}</span>
 }

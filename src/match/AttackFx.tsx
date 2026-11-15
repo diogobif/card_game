@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { AttackEvent, FieldCard } from '../../shared/game.ts'
+import { useI18n } from '../i18n/I18nContext.ts'
 import { CharacterCardView } from './GameCards.tsx'
 import { HeartIcon } from './icons.tsx'
 import { playImpact, playLifeHit, playShatter, playWhoosh, unlockAudio } from './sfx.ts'
@@ -35,6 +36,7 @@ type Props = {
  * and destroyed cards shatter. It never takes clicks, so the next turn can start underneath.
  */
 export function AttackFx({ event, myId, names }: Props) {
+  const { t } = useI18n()
   // The attack already on screen when the match opens is history, not news.
   const seen = useRef(event?.id ?? 0)
   const [shown, setShown] = useState<AttackEvent | null>(null)
@@ -75,7 +77,7 @@ export function AttackFx({ event, myId, names }: Props) {
 
   if (!shown) return null
   const mine = shown.attackerPlayerId === myId
-  const defenderName = names[shown.defenderPlayerId] ?? 'Oponente'
+  const defenderName = names[shown.defenderPlayerId] ?? t.common.opponent
   const targetBroke = shown.target !== null && shown.targetResistanceAfter === null
   const attackerBroke = shown.attackerAttackAfter === null
 
@@ -83,17 +85,17 @@ export function AttackFx({ event, myId, names }: Props) {
   if (shown.target) {
     results.push(
       targetBroke
-        ? `${shown.target.card.name} foi destruída`
-        : `${shown.target.card.name} ficou com resistência ${shown.targetResistanceAfter}`,
+        ? t.fx.destroyed(shown.target.card.name)
+        : t.fx.resistanceLeft(shown.target.card.name, shown.targetResistanceAfter),
     )
   }
-  if (shown.lifeDamage > 0) results.push(`${shown.lifeDamage} de dano em ${mine ? defenderName : 'você'}`)
-  if (attackerBroke) results.push(`${shown.attacker.card.name} também foi destruída`)
+  if (shown.lifeDamage > 0) results.push(t.fx.damageOn(shown.lifeDamage, mine ? defenderName : t.fx.youObject))
+  if (attackerBroke) results.push(t.fx.alsoDestroyed(shown.attacker.card.name))
 
   return (
     <div key={shown.id} className="fx" aria-hidden="true">
       <div className="fx-stage">
-        <p className="fx-caption">{mine ? 'Você atacou!' : `${names[shown.attackerPlayerId] ?? 'Oponente'} atacou!`}</p>
+        <p className="fx-caption">{mine ? t.fx.youAttacked : t.fx.attacked(names[shown.attackerPlayerId] ?? t.common.opponent)}</p>
         <div className="fx-row">
           <FxCard field={shown.attacker} role="attacker" broken={attackerBroke} loss={shown.target ? shown.guard : null} />
           {shown.target ? (
@@ -103,10 +105,10 @@ export function AttackFx({ event, myId, names }: Props) {
               <span className="fx-flash" />
               <HeartIcon size={56} />
               <strong>{shown.defenderLifeAfter + shown.lifeDamage}</strong>
-              <span>{mine ? defenderName : 'Sua vida'}</span>
+              <span>{mine ? defenderName : t.fx.yourLife}</span>
             </div>
           )}
-          {shown.lifeDamage > 0 && <span className="fx-life-loss">−{shown.lifeDamage} vida</span>}
+          {shown.lifeDamage > 0 && <span className="fx-life-loss">{t.fx.lifeLoss(shown.lifeDamage)}</span>}
         </div>
         <p className="fx-result">{results.join(' · ')}</p>
       </div>
@@ -126,6 +128,7 @@ function FxCard({
   /** Points this card loses in the clash (resistance for the target, strength for the attacker). */
   loss: number | null
 }) {
+  const { t } = useI18n()
   const card = <CharacterCardView card={field.card} attack={field.attack} resistance={field.resistance} />
   return (
     <div className={`fx-card fx-${role}${broken ? ' is-broken' : ''}${role === 'target' ? ' fx-target-slot' : ''}`}>
@@ -147,7 +150,7 @@ function FxCard({
       {loss !== null && loss > 0 && (
         <span className={`fx-damage ${role === 'target' ? 'is-res' : 'is-atk'}`}>−{loss}</span>
       )}
-      {broken && <span className="fx-broken-label">Destruída</span>}
+      {broken && <span className="fx-broken-label">{t.fx.destroyedTag}</span>}
     </div>
   )
 }

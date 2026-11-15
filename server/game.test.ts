@@ -116,7 +116,7 @@ describe('choose phase', () => {
     playCard(game, ANA.id, game.players[0].hand[0].id, false)
     vi.advanceTimersByTime(TURN_TIME_MS)
     expect(game.players[1].field).toHaveLength(1)
-    expect(game.log.some((l) => l.includes('Bia não escolheu a tempo'))).toBe(true)
+    expect(game.log.some((l) => l.kind === 'auto-pick' && l.player === 'Bia')).toBe(true)
   })
 
   it('a player with 3 characters in the arena keeps their hand and the turn goes on', () => {
@@ -206,7 +206,7 @@ describe('attack phase', () => {
     vi.advanceTimersByTime(TURN_TIME_MS)
     expect(game.phase).toBe('choose')
     expect(game.turn).toBe(2)
-    expect(game.log.some((l) => l.includes('não atacou a tempo'))).toBe(true)
+    expect(game.log.some((l) => l.kind === 'attack-timeout')).toBe(true)
   })
 })
 

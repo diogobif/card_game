@@ -11,13 +11,13 @@ import {
 import { Logo } from '../components/Logo.tsx'
 import { usePlayer } from '../player/PlayerContext.ts'
 import { createPlayerId } from '../player/storage.ts'
-import { TEAM_LABELS } from '../player/teams.ts'
+import { useI18n } from '../i18n/I18nContext.ts'
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher.tsx'
 import './LoginPage.css'
-
-const NAME_HINT = `De ${NAME_MIN_LENGTH} a ${NAME_MAX_LENGTH} letras ou números, sem espaços.`
 
 export function LoginPage() {
   const { player, login } = usePlayer()
+  const { t } = useI18n()
   const navigate = useNavigate()
   const location = useLocation()
   const [name, setName] = useState('')
@@ -33,11 +33,11 @@ export function LoginPage() {
   const trimmed = name.trim()
   const nameError =
     trimmed.length < NAME_MIN_LENGTH
-      ? `O nome precisa ter pelo menos ${NAME_MIN_LENGTH} caracteres.`
+      ? t.login.nameTooShort
       : !NAME_PATTERN.test(trimmed)
-        ? 'Use apenas letras e números, sem espaços ou símbolos.'
+        ? t.login.nameInvalid
         : null
-  const teamError = team ? null : 'Escolha um time.'
+  const teamError = team ? null : t.login.teamRequired
   const showNameError = submitted && !!nameError
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -50,26 +50,26 @@ export function LoginPage() {
 
   return (
     <main className="login">
+      <LanguageSwitcher className="login-lang" />
       <div className="login-layout">
         <section className="login-intro">
           <Logo size="lg" as="h1" />
           <p className="login-tagline">
-            <strong>Vermelho contra azul, carta contra carta.</strong> Um duelo por turnos para dois
-            jogadores. Sem cadastro: escolha um nome e um lado e comece a briga.
+            <strong>{t.login.taglineStrong}</strong> {t.login.tagline}
           </p>
         </section>
 
         <form className="login-card" onSubmit={handleSubmit} noValidate>
           {fromInvite && (
             <div className="login-invite" role="status">
-              <strong>Você foi convidado para uma partida!</strong>
-              <span>Escolha um nome e um time. A partida começa assim que você entrar.</span>
+              <strong>{t.login.invitedTitle}</strong>
+              <span>{t.login.invitedText}</span>
             </div>
           )}
-          <h2>Entrar no jogo</h2>
+          <h2>{t.login.heading}</h2>
 
           <label className="login-field">
-            <span>Seu nome</span>
+            <span>{t.login.nameLabel}</span>
             <input
               type="text"
               value={name}
@@ -81,21 +81,21 @@ export function LoginPage() {
               aria-describedby="name-help"
             />
             <span id="name-help" className={showNameError ? 'login-error' : 'login-help'}>
-              {showNameError ? nameError : NAME_HINT}
+              {showNameError ? nameError : t.login.nameHint}
             </span>
           </label>
 
           <fieldset className="login-teams">
-            <legend>Seu time</legend>
+            <legend>{t.login.teamLegend}</legend>
             <div className="login-team-grid">
-              {TEAMS.map((t) => (
-                <label key={t} className={`team-option team-option-${t}`}>
+              {TEAMS.map((option) => (
+                <label key={option} className={`team-option team-option-${option}`}>
                   <input
                     type="radio"
                     name="team"
-                    value={t}
-                    checked={team === t}
-                    onChange={() => setTeam(t)}
+                    value={option}
+                    checked={team === option}
+                    onChange={() => setTeam(option)}
                   />
                   <span className="team-option-art" aria-hidden="true">
                     <span />
@@ -106,8 +106,8 @@ export function LoginPage() {
                     </svg>
                   </span>
                   <span className="team-option-label">
-                    <strong>{TEAM_LABELS[t]}</strong>
-                    <span>{CHARACTERS.filter((c) => c.team === t).length} personagens</span>
+                    <strong>{t.teams[option]}</strong>
+                    <span>{t.login.characters(CHARACTERS.filter((c) => c.team === option).length)}</span>
                   </span>
                 </label>
               ))}
@@ -116,25 +116,20 @@ export function LoginPage() {
           </fieldset>
 
           <button type="submit" className={`login-submit${team ? ` login-submit-${team}` : ''}`}>
-            {fromInvite ? 'Entrar na partida' : team ? `Entrar no ${TEAM_LABELS[team]}` : 'Entrar'}
+            {fromInvite ? t.login.submitInvite : team ? t.login.submitTeam(t.teams[team]) : t.login.submit}
           </button>
           {/* New tab, so the form and any pending invite redirect survive. */}
           <a href="/regras" target="_blank" rel="noopener" className="login-rules">
-            ma oe
+            {t.login.rulesLink}
           </a>
         </form>
 
         <ol className="login-steps">
-          <li>
-            <strong>Escolha seu time.</strong> Você joga com as cartas do Time Vermelho ou do Time Azul.
-          </li>
-          <li>
-            <strong>Desafie alguém.</strong> Convide um jogador online ou mande um link para um amigo.
-          </li>
-          <li>
-            <strong>Jogue em turnos de 1 minuto.</strong> Coloque personagens na arena e ataque até zerar
-            a vida do oponente.
-          </li>
+          {t.login.steps.map(([title, text]) => (
+            <li key={title}>
+              <strong>{title}</strong> {text}
+            </li>
+          ))}
         </ol>
       </div>
     </main>

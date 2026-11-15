@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-A multiplayer card game web app (rules below). UI text is in Portuguese (pt-BR).
+A multiplayer card game web app (rules below). UI text is in Portuguese (pt-BR) by default, with an English translation.
 
 ## Architecture
 
@@ -18,6 +18,7 @@ Client data flow:
 
 - `PlayerContext` (`src/player/`): current player `{ id, name, team }`, persisted in `sessionStorage` (each tab is its own player, which makes two-tab testing easy).
 - `ServerContext` (`src/net/`): one WebSocket per logged-in player, auto-reconnects, sends `hello` on every (re)connect. Exposes `users`, `invites`, `currentMatch`, `send`, and `subscribe` (pages listen for one-off messages like `link-created`). A `match-start` message navigates to `/match/:id` from anywhere.
+- `I18nProvider` (`src/i18n/`): UI language, `pt` (default) or `en`, persisted in `localStorage` and switched with `LanguageSwitcher`. Components read text with `const { t } = useI18n()`. All UI strings live in `src/i18n/pt.ts`, whose shape is the `Messages` type that `en.ts` must match, so a new string goes into both files (type-check fails otherwise). Long prose like the rules has one component per language (`src/rules/RulesPt.tsx`, `RulesEn.tsx`). The server sends data, not text: the match history is a `LogEntry` union (`shared/game.ts`) that each client formats with `t.log`. Card, arena and player names are not translated.
 - Pages that need a player redirect to `/` with `state.from`, and login returns there (this is how invite links work for players who haven't logged in yet).
 
 The game engine is `server/game.ts`: the server is authoritative and sends each player a `game-state` with their own `GameView` (opponent hand and unused support hidden; each player draws from their own team's deck) after every change. The client renders it in `src/match/GameBoard.tsx`; `ServerContext.game` keeps the last view so the result stays visible after the match ends. Each view also carries `lastAttack` (an `AttackEvent` with before/after stats); `src/match/AttackFx.tsx`, mounted outside the per-phase board, plays each new attack id once as a short clash animation with synthesized Web Audio sounds (`src/match/sfx.ts`, mute stored in `localStorage`).

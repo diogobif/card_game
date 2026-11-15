@@ -1,0 +1,37 @@
+.lang-switch {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.lang-switch button {
+  min-width: 36px;
+  min-height: 32px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.lang-switch button:hover:not(.is-current) {
+  color: var(--text-h);
+}
+
+.lang-switch button.is-current {
+  background: var(--text-h);
+  color: var(--bg);
+}
+
+.lang-switch button:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 1px;
+}

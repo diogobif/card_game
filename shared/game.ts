@@ -90,7 +90,26 @@ export type GameView = {
   opponent: OpponentView
   /** Support cards played this turn; their effects last until the turn ends. */
   turnSupports: PlayedSupport[]
-  log: string[]
+  log: LogEntry[]
   result: GameResult | null
   lastAttack: AttackEvent | null
 }
+
+/**
+ * One line of the match history. The server sends data, not text, so each client can show it in
+ * its own language.
+ */
+export type LogEntry =
+  | { kind: 'arena'; arena: string }
+  | { kind: 'forfeit'; player: string }
+  | { kind: 'disconnect'; player: string }
+  | { kind: 'direct-attack'; attacker: string; player: string; damage: number }
+  | { kind: 'attack'; attacker: string; power: number; target: string; guard: number | null }
+  | { kind: 'excess-damage'; player: string; damage: number }
+  | { kind: 'left-arena'; card: string }
+  | { kind: 'auto-pick'; player: string }
+  | { kind: 'arenas-full' }
+  | { kind: 'played'; player: string; card: string }
+  | { kind: 'support'; player: string; support: string }
+  | { kind: 'no-attackers'; player: string }
+  | { kind: 'attack-timeout'; player: string }

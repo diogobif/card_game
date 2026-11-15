@@ -3,13 +3,10 @@ import { Link, Navigate, useLocation, useParams } from 'react-router'
 import type { MatchErrorReason } from '../../shared/protocol.ts'
 import { AttackFx } from '../match/AttackFx.tsx'
 import { GameBoard } from '../match/GameBoard.tsx'
+import { useI18n } from '../i18n/I18nContext.ts'
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher.tsx'
 import { useServer } from '../net/ServerContext.ts'
 import { usePlayer } from '../player/PlayerContext.ts'
-
-const ERROR_MESSAGES: Record<MatchErrorReason, string> = {
-  'not-found': 'Partida não encontrada. O convite pode ter expirado ou sido cancelado.',
-  full: 'Esta partida já está completa.',
-}
 
 // Keyed by match id so per-match state resets when the URL changes.
 export function MatchPage() {
@@ -19,6 +16,7 @@ export function MatchPage() {
 
 function MatchView({ matchId }: { matchId: string }) {
   const { player } = usePlayer()
+  const { t } = useI18n()
   const { status, currentMatch, game, send, subscribe } = useServer()
   const location = useLocation()
   const [error, setError] = useState<MatchErrorReason | null>(null)
@@ -61,22 +59,23 @@ function MatchView({ matchId }: { matchId: string }) {
 
   let content
   if (ended) {
-    content = <p>A partida terminou.</p>
+    content = <p>{t.match.ended}</p>
   } else if (error) {
-    content = <p>{ERROR_MESSAGES[error]}</p>
+    content = <p>{t.match.errors[error]}</p>
   } else if (!match) {
-    content = <p>{status === 'open' ? 'Aguardando o oponente…' : 'Conectando ao servidor…'}</p>
+    content = <p>{status === 'open' ? t.match.waitingOpponent : t.common.connecting}</p>
   } else {
-    content = <p>Preparando a partida…</p>
+    content = <p>{t.match.preparing}</p>
   }
 
   return (
     <main className="home">
       <section className="panel">
-        <h1>Partida</h1>
+        <h1>{t.match.title}</h1>
         {content}
-        {(ended || error || !match) && <Link to="/home">Voltar para o início</Link>}
+        {(ended || error || !match) && <Link to="/home">{t.common.backHome}</Link>}
       </section>
+      <LanguageSwitcher />
     </main>
   )
 }

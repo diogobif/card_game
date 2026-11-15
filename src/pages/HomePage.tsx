@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router'
 import { TEAMS, type Player, type Team } from '../../shared/player.ts'
 import type { OnlineUser } from '../../shared/protocol.ts'
@@ -6,12 +6,19 @@ import { Avatar } from '../components/Avatar.tsx'
 import { Logo } from '../components/Logo.tsx'
 import { useServer } from '../net/ServerContext.ts'
 import { usePlayer } from '../player/PlayerContext.ts'
-import { TEAM_LABELS } from '../player/teams.ts'
+import { useI18n } from '../i18n/I18nContext.ts'
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher.tsx'
 import './HomePage.css'
 
 export function HomePage() {
   const { player, logout } = usePlayer()
   const { status, users, invites, send, subscribe, dismissInvite } = useServer()
+  const { t } = useI18n()
+  // Read through a ref so the subscription doesn't restart when the language changes.
+  const declinedRef = useRef(t.home.declined)
+  useEffect(() => {
+    declinedRef.current = t.home.declined
+  })
   const [linkMatchId, setLinkMatchId] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [sentInvites, setSentInvites] = useState<ReadonlySet<string>>(new Set())
@@ -23,7 +30,7 @@ export function HomePage() {
         if (msg.type === 'link-created') setLinkMatchId(msg.matchId)
         if (msg.type === 'invite-declined') {
           setSentInvites((prev) => new Set([...prev].filter((id) => id !== msg.by.id)))
-          setNotice(`${msg.by.name} não aceitou o convite.`)
+          setNotice(declinedRef.current(msg.by.name))
         }
       }),
     [subscribe],
@@ -34,14 +41,15 @@ export function HomePage() {
 
   // Flag the tab title while invites wait, so they get noticed from other tabs too.
   const inviteCount = visibleInvites.length
+  const invitesFlag = inviteCount > 0 ? t.home.tabInvites(inviteCount) : null
   useEffect(() => {
-    if (inviteCount === 0) return
+    if (!invitesFlag) return
     const baseTitle = document.title
-    document.title = `(${inviteCount}) ${inviteCount === 1 ? 'Convite' : 'Convites'} · ${baseTitle}`
+    document.title = `${invitesFlag} · ${baseTitle}`
     return () => {
       document.title = baseTitle
     }
-  }, [inviteCount])
+  }, [invitesFlag])
 
   if (!player) return <Navigate to="/" replace />
 
@@ -81,7 +89,7 @@ export function HomePage() {
 
   function shareLink() {
     if (!inviteLink) return
-    navigator.share({ title: 'Cartas da Discórdia', text: 'Vem jogar comigo!', url: inviteLink }).catch(() => {
+    navigator.share({ title: 'Cartas da Discórdia', text: t.home.shareText, url: inviteLink }).catch(() => {
       // Share sheet closed: nothing to do.
     })
   }
@@ -92,17 +100,18 @@ export function HomePage() {
         <Logo />
         <nav className="app-bar-nav">
           <Link to="/regras" className="app-bar-link">
-            Como jogar
+            {t.common.howToPlay}
           </Link>
+          <LanguageSwitcher />
           <span className="me-chip">
             <Avatar name={player.name} team={player.team} size="sm" />
             <span className="me-chip-text">
               <strong>{player.name}</strong>
-              <span className={`me-chip-team team-text-${player.team}`}>{TEAM_LABELS[player.team]}</span>
+              <span className={`me-chip-team team-text-${player.team}`}>{t.teams[player.team]}</span>
             </span>
           </span>
           <button type="button" className="btn btn-ghost app-bar-btn" onClick={logout}>
-            Trocar jogador
+            {t.home.switchPlayer}
           </button>
         </nav>
       </header>
@@ -111,8 +120,8 @@ export function HomePage() {
         {!connected && (
           <p className="home-status" role="status">
             {status === 'connecting'
-              ? 'Conectando ao servidor…'
-              : 'Sem conexão com o servidor. Tentando reconectar…'}
+              ? t.common.connecting
+              : t.home.disconnected}
           </p>
         )}
         {notice && (
@@ -129,9 +138,9 @@ export function HomePage() {
           <section className="home-players" aria-labelledby="online-title">
             <div className="home-section-head">
               <h2 id="online-title">
-                Jogadores online <span className="home-count">· {users.length}</span>
+                {t.home.onlinePlayers} <span className="home-count">· {users.length}</span>
               </h2>
-              <span>Você pode desafiar jogadores dos dois times.</span>
+              <span>{t.home.challengeAny}</span>
             </div>
             <div className="home-teams">
               {TEAMS.map((team) => (
@@ -152,57 +161,57 @@ export function HomePage() {
 
           <aside className="home-aside">
             <section className="panel home-link-card">
-              <h2>Convidar um amigo</h2>
+              <h2>{t.home.inviteFriend}</h2>
               {inviteLink ? (
                 <>
-                  <p>Mande este link. A partida começa assim que seu amigo entrar.</p>
+                  <p>{t.home.linkReady}</p>
                   <div className="home-link">
                     <input
                       type="text"
                       readOnly
                       value={inviteLink}
-                      aria-label="Link de convite"
+                      aria-label={t.home.inviteLinkLabel}
                       onFocus={(e) => e.target.select()}
                     />
                     <button type="button" className="btn" onClick={copyLink}>
-                      {copied ? 'Copiado!' : 'Copiar'}
+                      {copied ? t.home.copied : t.home.copy}
                     </button>
                   </div>
                   {canShare && (
                     <button type="button" className="btn btn-ghost home-wide-btn" onClick={shareLink}>
-                      Compartilhar link
+                      {t.home.shareLink}
                     </button>
                   )}
                   <div className="home-waiting">
                     <span className="home-dot is-action" aria-hidden="true" />
-                    <span>Aguardando seu amigo entrar…</span>
+                    <span>{t.home.waitingFriend}</span>
                     <button type="button" className="home-text-btn" onClick={cancelLink}>
-                      Cancelar
+                      {t.home.cancel}
                     </button>
                   </div>
                 </>
               ) : (
                 <>
-                  <p>Seu amigo não está na lista? Gere um link e mande para ele.</p>
+                  <p>{t.home.noLinkYet}</p>
                   <button
                     type="button"
                     className="btn home-wide-btn"
                     disabled={!connected}
                     onClick={() => send({ type: 'create-link' })}
                   >
-                    Gerar link de convite
+                    {t.home.createLink}
                   </button>
                 </>
               )}
             </section>
             <section className="panel home-help">
-              <h2>Primeira vez?</h2>
+              <h2>{t.home.firstTime}</h2>
               <ol>
-                <li>Convide alguém da lista ou mande um link.</li>
-                <li>A cada turno, escolha 1 personagem da mão.</li>
-                <li>Ataque os personagens do oponente até zerar a vida dele.</li>
+                {t.home.helpSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
               </ol>
-              <Link to="/regras">Ver as regras completas</Link>
+              <Link to="/regras">{t.home.fullRules}</Link>
             </section>
           </aside>
         </div>
@@ -218,28 +227,32 @@ type InviteHeroProps = {
 
 /** The first invite gets the full banner; any others stack below it in smaller rows. */
 function InviteHero({ invites, onRespond }: InviteHeroProps) {
+  const { t } = useI18n()
   const [first, ...rest] = invites
+  const [teamBefore, teamAfter] = t.home.inviterTeam(first.name)
   return (
-    <section className="invite-hero" aria-label="Convites recebidos" aria-live="polite">
+    <section className="invite-hero" aria-label={t.home.invitesReceived} aria-live="polite">
       <div className="invite-main">
         <span className="invite-avatar">
           <Avatar name={first.name} team={first.team} size="lg" />
         </span>
         <div className="invite-text">
           <span className="invite-eyebrow">
-            <BellIcon /> Novo convite
+            <BellIcon /> {t.home.newInvite}
           </span>
-          <h2>{first.name} te desafiou para uma partida!</h2>
+          <h2>{t.home.challenged(first.name)}</h2>
           <p>
-            {first.name} é do <strong>{TEAM_LABELS[first.team]}</strong>. Aceite para começar agora.
+            {teamBefore}
+            <strong>{t.teams[first.team]}</strong>
+            {teamAfter}
           </p>
         </div>
         <div className="invite-actions">
           <button type="button" className="invite-btn is-secondary" onClick={() => onRespond(first.id, false)}>
-            Recusar
+            {t.home.decline}
           </button>
           <button type="button" className="invite-btn is-primary" onClick={() => onRespond(first.id, true)}>
-            Aceitar partida
+            {t.home.acceptMatch}
           </button>
         </div>
       </div>
@@ -247,13 +260,14 @@ function InviteHero({ invites, onRespond }: InviteHeroProps) {
         <div key={p.id} className="invite-more">
           <Avatar name={p.name} team={p.team} size="sm" />
           <span className="invite-more-text">
-            <strong>{p.name}</strong> ({TEAM_LABELS[p.team]}) também te convidou
+            <strong>{p.name}</strong>
+            {t.home.alsoInvited(t.teams[p.team])}
           </span>
           <button type="button" className="invite-btn is-secondary is-small" onClick={() => onRespond(p.id, false)}>
-            Recusar
+            {t.home.decline}
           </button>
           <button type="button" className="invite-btn is-primary is-small" onClick={() => onRespond(p.id, true)}>
-            Aceitar
+            {t.home.accept}
           </button>
         </div>
       ))}
@@ -273,17 +287,18 @@ type TeamListProps = {
 }
 
 function TeamList({ team, mine, users, invitedBy, sentInvites, connected, onInvite, onAccept }: TeamListProps) {
+  const { t } = useI18n()
   return (
     <div className={`team-list team-list-${team}`}>
       <div className="team-list-head">
         <strong>
-          {TEAM_LABELS[team]}
-          {mine && <span className="team-list-mine"> · seu time</span>}
+          {t.teams[team]}
+          {mine && <span className="team-list-mine">{t.home.yourTeam}</span>}
         </strong>
-        <span className="team-list-count">{users.length} online</span>
+        <span className="team-list-count">{t.home.online(users.length)}</span>
       </div>
       {users.length === 0 ? (
-        <p className="team-list-empty">Ninguém do {TEAM_LABELS[team]} online agora.</p>
+        <p className="team-list-empty">{t.home.noneOnline(t.teams[team])}</p>
       ) : (
         <ul>
           {users.map((user) => {
@@ -298,12 +313,12 @@ function TeamList({ team, mine, users, invitedBy, sentInvites, connected, onInvi
                   <strong>{user.name}</strong>
                   <span className={`team-row-status is-${state}`}>
                     <span className="home-dot" aria-hidden="true" />
-                    {STATUS_LABELS[state]}
+                    {t.home.status[state]}
                   </span>
                 </span>
                 {state === 'invited-me' ? (
                   <button type="button" className="btn btn-action" onClick={() => onAccept(user.id)}>
-                    Aceitar
+                    {t.home.accept}
                   </button>
                 ) : (
                   <button
@@ -312,7 +327,7 @@ function TeamList({ team, mine, users, invitedBy, sentInvites, connected, onInvi
                     disabled={!connected || state !== 'available'}
                     onClick={() => onInvite(user.id)}
                   >
-                    {state === 'busy' ? 'Ocupado' : state === 'sent' ? 'Enviado' : 'Convidar'}
+                    {state === 'busy' ? t.home.busy : state === 'sent' ? t.home.sent : t.home.invite}
                   </button>
                 )}
               </li>
@@ -323,13 +338,6 @@ function TeamList({ team, mine, users, invitedBy, sentInvites, connected, onInvi
     </div>
   )
 }
-
-const STATUS_LABELS = {
-  'invited-me': 'Te convidou',
-  busy: 'Em partida',
-  sent: 'Convite enviado',
-  available: 'Disponível',
-} as const
 
 function BellIcon() {
   return (

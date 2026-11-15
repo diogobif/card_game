@@ -5,8 +5,9 @@ import { MAX_FIELD, MAX_TURNS, START_LIFE, type FieldCard, type GameView } from 
 import type { Team } from '../../shared/player.ts'
 import type { ClientMessage } from '../../shared/protocol.ts'
 import { TeamBadge } from '../components/TeamBadge.tsx'
+import { useI18n } from '../i18n/I18nContext.ts'
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher.tsx'
 import { initialsOf } from '../player/initials.ts'
-import { TEAM_LABELS } from '../player/teams.ts'
 import { Rules } from '../rules/Rules.tsx'
 import { CharacterCardView, SupportCardView, type CardState } from './GameCards.tsx'
 import {
@@ -20,7 +21,6 @@ import {
   SwordIcon,
   TargetIcon,
 } from './icons.tsx'
-import { END_REASON_LABELS } from './labels.ts'
 import { isMuted, setMuted, subscribeMuted } from './sfx.ts'
 import { useCountdown } from './useCountdown.ts'
 import './GameBoard.css'
@@ -30,12 +30,10 @@ type Props = {
   send: (msg: ClientMessage) => void
 }
 
-const STEPS = ['Escolher', 'Revelar', 'Atacar'] as const
-
 type Banner = {
   /** 'action': the player must do something now. 'wait': nothing to do. */
   tone: 'action' | 'wait'
-  /** Index into STEPS. */
+  /** Index into the turn steps (choose, reveal, attack). */
   step: number
   icon: ReactNode
   eyebrow: string
@@ -46,6 +44,7 @@ type Banner = {
 // Remount per turn phase (key it on turn + phase) so selections reset between phases.
 export function GameBoard({ game, send }: Props) {
   const { me, opponent, phase } = game
+  const { t } = useI18n()
   const seconds = useCountdown(game.timeLeftMs, game)
   const [handPick, setHandPick] = useState<string | null>(null)
   const [useSupport, setUseSupport] = useState(false)
@@ -72,16 +71,17 @@ export function GameBoard({ game, send }: Props) {
   const afterClash = phase === 'choose' && game.lastAttack?.turn === game.turn - 1
   const toastDelay = afterClash ? 2300 : 0
   const [toast, setToast] = useState(needsAction)
+  const yourTurnTab = t.board.yourTurnTab
   useEffect(() => {
     if (!needsAction) return
     const baseTitle = document.title
-    document.title = `(!) Sua vez · ${baseTitle}`
+    document.title = `(!) ${yourTurnTab} · ${baseTitle}`
     const id = window.setTimeout(() => setToast(false), 2200 + toastDelay)
     return () => {
       window.clearTimeout(id)
       document.title = baseTitle
     }
-  }, [needsAction, toastDelay])
+  }, [needsAction, toastDelay, yourTurnTab])
 
   function confirmCard() {
     if (!handPick) return
@@ -90,7 +90,7 @@ export function GameBoard({ game, send }: Props) {
 
   // Stays on the board so the player sees the result.
   function giveUp() {
-    if (window.confirm('Desistir da partida? Você será declarado perdedor.')) {
+    if (window.confirm(t.board.giveUpConfirm)) {
       send({ type: 'leave-match', matchId: game.matchId })
     }
   }
@@ -119,28 +119,33 @@ export function GameBoard({ game, send }: Props) {
           tone: 'action',
           step: 0,
           icon: <CardsIcon size={28} />,
-          eyebrow: 'Sua vez',
-          title: 'Escolha 1 personagem da sua mão',
-          text: 'Ele entra na sua arena. As cartas dos dois jogadores são reveladas ao mesmo tempo.',
+          eyebrow: t.board.banner.chooseEyebrow,
+          title: t.board.banner.chooseTitle,
+          text: t.board.banner.chooseText,
         }
       }
       const wait = { tone: 'wait', step: 0, icon: <ClockIcon size={28} /> } as const
       if (me.hasChosen) {
         return {
           ...wait,
-          eyebrow: 'Carta escolhida',
-          title: `Aguardando ${opponent.player.name} escolher`,
-          text: 'As cartas serão reveladas quando os dois jogadores escolherem.',
+          eyebrow: t.board.banner.chosenEyebrow,
+          title: t.board.banner.chosenTitle(opponent.player.name),
+          text: t.board.banner.chosenText,
         }
       }
       if (me.hand.length === 0) {
-        return { ...wait, eyebrow: 'Sem cartas', title: 'Você não tem cartas na mão', text: 'Aguarde o oponente.' }
+        return {
+          ...wait,
+          eyebrow: t.board.banner.noCardsEyebrow,
+          title: t.board.banner.noCardsTitle,
+          text: t.board.banner.noCardsText,
+        }
       }
       return {
         ...wait,
-        eyebrow: 'Arena cheia',
-        title: `Sua arena já tem ${MAX_FIELD} personagens`,
-        text: 'Você não joga carta neste turno, até um dos seus personagens sair da arena.',
+        eyebrow: t.board.banner.fullEyebrow,
+        title: t.board.banner.fullTitle(MAX_FIELD),
+        text: t.board.banner.fullText,
       }
     }
     if (!myAttack) {
@@ -148,9 +153,9 @@ export function GameBoard({ game, send }: Props) {
         tone: 'wait',
         step: 2,
         icon: <ClockIcon size={28} />,
-        eyebrow: 'Vez do oponente',
-        title: `${opponent.player.name} está escolhendo o ataque`,
-        text: 'Qualquer personagem da sua arena pode ser atacado. Você ataca no próximo turno.',
+        eyebrow: t.board.banner.theirAttackEyebrow,
+        title: t.board.banner.theirAttackTitle(opponent.player.name),
+        text: t.board.banner.theirAttackText,
       }
     }
     if (directAttack) {
@@ -158,9 +163,9 @@ export function GameBoard({ game, send }: Props) {
         tone: 'action',
         step: 2,
         icon: <SwordIcon size={28} />,
-        eyebrow: 'Sua vez de atacar',
-        title: attacker ? 'Confirme o ataque direto' : 'Escolha qual dos seus personagens vai atacar',
-        text: 'O oponente não tem personagens na arena: o ataque vai direto nos pontos de vida.',
+        eyebrow: t.board.banner.attackEyebrow,
+        title: attacker ? t.board.banner.confirmDirect : t.board.banner.pickAttacker,
+        text: t.board.banner.directText,
       }
     }
     if (!attacker) {
@@ -168,18 +173,18 @@ export function GameBoard({ game, send }: Props) {
         tone: 'action',
         step: 2,
         icon: <SwordIcon size={28} />,
-        eyebrow: 'Sua vez de atacar · Passo 1 de 2',
-        title: 'Escolha qual dos seus personagens vai atacar',
-        text: 'Qualquer personagem da sua arena pode atacar, não só o que acabou de entrar. É 1 ataque por turno.',
+        eyebrow: t.board.banner.step1,
+        title: t.board.banner.pickAttacker,
+        text: t.board.banner.step1Text,
       }
     }
     return {
       tone: 'action',
       step: 2,
       icon: <TargetIcon size={28} />,
-      eyebrow: 'Sua vez de atacar · Passo 2 de 2',
-      title: 'Agora escolha o personagem do oponente que vai sofrer o ataque',
-      text: 'Veja o resultado logo abaixo antes de confirmar.',
+      eyebrow: t.board.banner.step2,
+      title: t.board.banner.step2Title,
+      text: t.board.banner.step2Text,
     }
   }
 
@@ -194,7 +199,7 @@ export function GameBoard({ game, send }: Props) {
     return f.card.id === targetPick ? 'targeted' : 'target'
   }
 
-  const newTag = (f: FieldCard) => (f.placedTurn === game.turn ? 'Nova' : undefined)
+  const newTag = (f: FieldCard) => (f.placedTurn === game.turn ? t.board.newTag : undefined)
 
   return (
     <main className="board">
@@ -206,23 +211,20 @@ export function GameBoard({ game, send }: Props) {
           <strong>{game.arena.name}</strong>{' '}
           {game.arena.favors ? (
             <span className={`team-badge team-badge-${game.arena.favors}`}>
-              +1/+1 {TEAM_LABELS[game.arena.favors]}
+              +1/+1 {t.teams[game.arena.favors]}
             </span>
           ) : (
-            <span className="board-tag">Neutra</span>
+            <span className="board-tag">{t.board.neutral}</span>
           )}
         </div>
         <div className="board-top-stats">
-          <strong>
-            Turno {game.turn} de {MAX_TURNS}
-          </strong>
-          <span>
-            Seu baralho: {me.deckCount} · Oponente: {opponent.deckCount}
-          </span>
+          <strong>{t.board.turn(game.turn, MAX_TURNS)}</strong>
+          <span>{t.board.decks(me.deckCount, opponent.deckCount)}</span>
+          <LanguageSwitcher />
           <SoundToggle />
           {phase !== 'over' && (
             <button type="button" className="btn btn-ghost board-leave" onClick={giveUp}>
-              Desistir
+              {t.board.giveUp}
             </button>
           )}
         </div>
@@ -232,22 +234,22 @@ export function GameBoard({ game, send }: Props) {
         <section className="panel board-result">
           <h2>
             {game.result.winnerId === null
-              ? 'Empate!'
+              ? t.board.draw
               : game.result.winnerId === me.player.id
-                ? 'Você venceu!'
-                : 'Você perdeu.'}
+                ? t.board.won
+                : t.board.lost}
           </h2>
           <p>
             {game.result.reason === 'forfeit' && game.result.winnerId === me.player.id
-              ? 'O oponente desistiu da partida.'
+              ? t.board.opponentForfeit
               : game.result.reason === 'forfeit'
-                ? 'Você desistiu da partida.'
+                ? t.board.youForfeit
                 : game.result.reason === 'disconnect' && game.result.winnerId === me.player.id
-                  ? 'O oponente ficou desconectado por mais de 60 segundos.'
-                  : END_REASON_LABELS[game.result.reason]}
+                  ? t.board.opponentDisconnected
+                  : t.board.endReasons[game.result.reason]}
           </p>
           <Link to="/home" className="btn">
-            Voltar para o início
+            {t.common.backHome}
           </Link>
         </section>
       )}
@@ -258,7 +260,7 @@ export function GameBoard({ game, send }: Props) {
         <div className="board-play">
           <section
             className={`board-zone${pickingTarget ? ' is-targeting' : ''}`}
-            aria-label="Arena do oponente"
+            aria-label={t.board.opponentArena}
           >
             <PlayerBar
               name={opponent.player.name}
@@ -266,14 +268,14 @@ export function GameBoard({ game, send }: Props) {
               team={opponent.player.team}
               life={opponent.life}
               lifeLoss={outcome?.lifeDamage ?? 0}
-              extra={`Mão: ${opponent.handCount} · Suporte ${opponent.supportUsed ? 'usado' : 'disponível'}`}
+              extra={t.board.opponentExtra(opponent.handCount, opponent.supportUsed)}
               status={
                 phase === 'choose'
                   ? opponent.hasChosen
-                    ? { label: 'Pronto', tone: 'done' }
-                    : { label: 'Escolhendo…', tone: 'idle' }
+                    ? { label: t.board.ready, tone: 'done' }
+                    : { label: t.board.choosing, tone: 'idle' }
                   : phase === 'attack' && !myAttack
-                    ? { label: 'Atacando', tone: 'alert' }
+                    ? { label: t.board.attacking, tone: 'alert' }
                     : undefined
               }
             />
@@ -281,10 +283,10 @@ export function GameBoard({ game, send }: Props) {
               <ZoneLabel tone={pickingTarget ? 'target' : undefined}>
                 {pickingTarget ? (
                   <>
-                    <TargetIcon size={14} /> Arena do oponente · clique no alvo
+                    <TargetIcon size={14} /> {t.board.clickTarget}
                   </>
                 ) : (
-                  `Arena do oponente · ${opponent.field.length} de ${MAX_FIELD}`
+                  t.board.opponentArenaCount(opponent.field.length, MAX_FIELD)
                 )}
               </ZoneLabel>
               <div className="board-field">
@@ -297,7 +299,7 @@ export function GameBoard({ game, send }: Props) {
                       attack={f.attack}
                       resistance={f.resistance}
                       state={state}
-                      tag={state === 'targeted' ? 'Alvo' : newTag(f)}
+                      tag={state === 'targeted' ? t.board.targetTag : newTag(f)}
                       onSelect={pickingTarget ? () => setTargetPick(f.card.id) : undefined}
                     />
                   )
@@ -309,7 +311,7 @@ export function GameBoard({ game, send }: Props) {
 
           {game.turnSupports.length > 0 && (
             <section className="board-supports">
-              <h3>Suportes deste turno</h3>
+              <h3>{t.board.turnSupports}</h3>
               <div className="board-field">
                 {game.turnSupports.map((s) => (
                   <SupportCardView key={s.support.id} card={s.support} />
@@ -320,25 +322,25 @@ export function GameBoard({ game, send }: Props) {
 
           <section
             className={`board-zone${myAttack && !attacker ? ' is-active' : ''}`}
-            aria-label="Sua arena"
+            aria-label={t.board.myArena}
           >
             <PlayerBar
-              name="Você"
-              initials="EU"
+              name={t.board.you}
+              initials={t.board.youInitials}
               team={me.player.team}
               life={me.life}
-              extra={`${me.player.name} · Suporte ${me.supportUsed ? 'usado' : 'disponível'}`}
+              extra={t.board.myExtra(me.player.name, me.supportUsed)}
             />
             <div className="board-zone-cards">
               <ZoneLabel tone={myAttack && !attacker ? 'action' : undefined}>
                 {myAttack && !attacker ? (
                   <>
-                    <PointerIcon size={14} /> Sua arena · clique no personagem que vai atacar
+                    <PointerIcon size={14} /> {t.board.clickAttacker}
                   </>
                 ) : myAttack ? (
-                  'Sua arena · clique em outro para trocar o atacante'
+                  t.board.switchAttackerHint
                 ) : (
-                  `Sua arena · ${me.field.length} de ${MAX_FIELD}`
+                  t.board.myArenaCount(me.field.length, MAX_FIELD)
                 )}
               </ZoneLabel>
               <div className="board-field">
@@ -351,7 +353,7 @@ export function GameBoard({ game, send }: Props) {
                       attack={f.attack}
                       resistance={f.resistance}
                       state={state}
-                      tag={state === 'selected' ? 'Atacante' : newTag(f)}
+                      tag={state === 'selected' ? t.board.attackerTag : newTag(f)}
                       onSelect={myAttack ? () => pickAttacker(f.card.id) : undefined}
                     />
                   )
@@ -364,17 +366,16 @@ export function GameBoard({ game, send }: Props) {
             </div>
           </section>
 
-          <section className={`panel board-hand${choosing ? ' is-active' : ''}`} aria-label="Sua mão">
+          <section className={`panel board-hand${choosing ? ' is-active' : ''}`} aria-label={t.board.hand}>
             <div className="board-hand-head">
-              <h2>Sua mão</h2>
+              <h2>{t.board.hand}</h2>
               <span className={choosing ? 'board-hint is-action' : 'board-hint'}>
                 {choosing ? (
                   <>
-                    <PointerIcon size={16} /> Clique em uma carta para selecioná-la. Você pode trocar até
-                    confirmar.
+                    <PointerIcon size={16} /> {t.board.handHint}
                   </>
                 ) : phase === 'attack' ? (
-                  'Você joga uma carta da mão no próximo turno.'
+                  t.board.nextTurnHint
                 ) : null}
               </span>
             </div>
@@ -384,7 +385,7 @@ export function GameBoard({ game, send }: Props) {
                   key={card.id}
                   card={card}
                   state={choosing ? (handPick === card.id ? 'selected' : 'playable') : myAttack ? 'dim' : 'idle'}
-                  tag={choosing && handPick === card.id ? 'Selecionada' : undefined}
+                  tag={choosing && handPick === card.id ? t.board.selectedTag : undefined}
                   onSelect={choosing ? () => setHandPick(card.id) : undefined}
                 />
               ))}
@@ -398,7 +399,7 @@ export function GameBoard({ game, send }: Props) {
                       disabled={!choosing}
                       onChange={(e) => setUseSupport(e.target.checked)}
                     />
-                    Usar neste turno
+                    {t.board.useSupport}
                   </label>
                 )}
               </div>
@@ -409,16 +410,16 @@ export function GameBoard({ game, send }: Props) {
         <aside className="board-aside">
           <TurnGuide step={banner?.step ?? -1} myAttackTurn={phase === 'attack' ? myAttack : null} />
           <section className="panel board-log">
-            <h2>Histórico</h2>
+            <h2>{t.board.history}</h2>
             <ol>
               {game.log.map((line, i) => (
-                <li key={i}>{line}</li>
+                <li key={i}>{t.log(line)}</li>
               ))}
             </ol>
           </section>
           {/* Collapsible so the rules can be read without leaving the match. */}
           <details className="panel board-rules">
-            <summary>Todas as regras</summary>
+            <summary>{t.board.allRules}</summary>
             <Rules />
           </details>
         </aside>
@@ -433,18 +434,18 @@ export function GameBoard({ game, send }: Props) {
           {choosing ? (
             <>
               <div className="board-dock-summary">
-                <span className="board-dock-label">Sua jogada</span>
+                <span className="board-dock-label">{t.board.yourPlay}</span>
                 {handCard ? (
                   <span>
-                    <strong>{handCard.name}</strong> (força {handCard.attack} · resistência{' '}
-                    {handCard.resistance}) · {useSupport ? 'com suporte' : 'sem suporte'}
+                    <strong>{handCard.name}</strong>
+                    {t.board.playStats(handCard.attack, handCard.resistance, useSupport)}
                   </span>
                 ) : (
-                  <span className="is-action">Escolha uma carta da sua mão</span>
+                  <span className="is-action">{t.board.pickFromHand}</span>
                 )}
               </div>
               <button type="button" className="btn btn-action" disabled={!handCard} onClick={confirmCard}>
-                {handCard ? `Jogar ${handCard.name}` : 'Jogar carta'}
+                {handCard ? t.board.play(handCard.name) : t.board.playCard}
               </button>
             </>
           ) : myAttack ? (
@@ -464,11 +465,11 @@ export function GameBoard({ game, send }: Props) {
                       setTargetPick(null)
                     }}
                   >
-                    Trocar atacante
+                    {t.board.switchAttacker}
                   </button>
                 )}
                 <button type="button" className="btn btn-action" disabled={!outcome} onClick={confirmAttack}>
-                  {directAttack ? 'Atacar diretamente' : 'Confirmar ataque'}
+                  {directAttack ? t.board.attackDirect : t.board.confirmAttack}
                 </button>
               </div>
             </>
@@ -480,7 +481,7 @@ export function GameBoard({ game, send }: Props) {
 
       {toast && (
         <div className="board-toast" role="status" style={{ animationDelay: `${toastDelay}ms` }}>
-          {myAttack ? 'Sua vez de atacar!' : 'Sua vez! Escolha um personagem'}
+          {myAttack ? t.board.toastAttack : t.board.toastChoose}
         </div>
       )}
     </main>
@@ -489,14 +490,15 @@ export function GameBoard({ game, send }: Props) {
 
 function SoundToggle() {
   const muted = useSyncExternalStore(subscribeMuted, isMuted)
+  const { t } = useI18n()
   return (
     <button
       type="button"
       className="btn btn-ghost board-sound"
       onClick={() => setMuted(!muted)}
       aria-pressed={!muted}
-      aria-label={muted ? 'Ativar som' : 'Desativar som'}
-      title={muted ? 'Ativar som' : 'Desativar som'}
+      aria-label={muted ? t.board.soundOn : t.board.soundOff}
+      title={muted ? t.board.soundOn : t.board.soundOff}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M11 5 6 9H3v6h3l5 4V5z" />
@@ -507,6 +509,7 @@ function SoundToggle() {
 }
 
 function TurnBanner({ banner, seconds }: { banner: Banner; seconds: number }) {
+  const { t } = useI18n()
   return (
     <section className={`board-banner is-${banner.tone}`} aria-live="polite">
       <span className="board-banner-icon">{banner.icon}</span>
@@ -515,8 +518,8 @@ function TurnBanner({ banner, seconds }: { banner: Banner; seconds: number }) {
         <h1>{banner.title}</h1>
         <p>{banner.text}</p>
       </div>
-      <ol className="board-steps" aria-label="Etapas do turno">
-        {STEPS.map((label, i) => (
+      <ol className="board-steps" aria-label={t.board.banner.stepsLabel}>
+        {t.board.steps.map((label, i) => (
           <li
             key={label}
             className={i === banner.step ? 'is-current' : i < banner.step ? 'is-done' : undefined}
@@ -531,26 +534,23 @@ function TurnBanner({ banner, seconds }: { banner: Banner; seconds: number }) {
         <strong>
           {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
         </strong>
-        <span>{banner.tone === 'action' ? 'restantes' : 'aguardando'}</span>
+        <span>{banner.tone === 'action' ? t.board.banner.remaining : t.board.banner.waiting}</span>
       </div>
     </section>
   )
 }
 
 function TurnGuide({ step, myAttackTurn }: { step: number; myAttackTurn: boolean | null }) {
+  const { t } = useI18n()
+  const g = t.board.guide
   const items = [
-    ['Escolha 1 personagem.', 'Os dois jogadores escolhem ao mesmo tempo.'],
-    ['Revelação.', 'As cartas aparecem nas arenas.'],
-    [
-      'Ataque.',
-      myAttackTurn === false
-        ? 'Neste turno quem ataca é o oponente. No próximo, é você.'
-        : 'Um jogador escolhe um atacante e um alvo. A vez de atacar alterna a cada turno.',
-    ],
+    [g.chooseTitle, g.chooseText],
+    [g.revealTitle, g.revealText],
+    [g.attackTitle, myAttackTurn === false ? g.attackTheirs : g.attackText],
   ]
   return (
     <section className="panel board-guide">
-      <h2>Como funciona um turno</h2>
+      <h2>{t.board.guideTitle}</h2>
       <ol>
         {items.map(([title, text], i) => (
           <li key={title} className={i === step ? 'is-current' : undefined}>
@@ -563,11 +563,11 @@ function TurnGuide({ step, myAttackTurn }: { step: number; myAttackTurn: boolean
       </ol>
       {myAttackTurn && (
         <>
-          <h3>Como o ataque funciona</h3>
+          <h3>{g.howAttackWorks}</h3>
           <ul>
-            <li>O alvo perde resistência igual à força do seu atacante.</li>
-            <li>Seu atacante perde força igual à resistência do alvo.</li>
-            <li>Se o alvo cair, o dano que sobrar vai direto na vida do oponente.</li>
+            {g.attackRules.map((rule) => (
+              <li key={rule}>{rule}</li>
+            ))}
           </ul>
         </>
       )}
@@ -585,27 +585,29 @@ type AttackSummaryProps = {
 }
 
 function AttackSummary({ attacker, target, direct, opponentName, opponentLife, outcome }: AttackSummaryProps) {
+  const { t } = useI18n()
+  const fx = t.board.effects
   const effects: { text: string; tone: 'good' | 'bad' | 'neutral' }[] = []
   if (outcome && attacker) {
     if (target) {
       effects.push(
         outcome.targetResistance === null
-          ? { text: `${target.card.name} sai da arena`, tone: 'good' }
-          : { text: `${target.card.name} fica com resistência ${outcome.targetResistance}`, tone: 'good' },
+          ? { text: fx.targetLeaves(target.card.name), tone: 'good' }
+          : { text: fx.targetResistance(target.card.name, outcome.targetResistance), tone: 'good' },
       )
     }
     if (outcome.lifeDamage > 0) {
       const after = Math.max(0, opponentLife - outcome.lifeDamage)
       effects.push({
-        text: `${outcome.lifeDamage} de dano em ${opponentName} (${opponentLife} → ${after})`,
+        text: fx.lifeDamage(outcome.lifeDamage, opponentName, opponentLife, after),
         tone: 'good',
       })
     }
     if (target) {
       effects.push(
         outcome.attackerAttack === null
-          ? { text: `${attacker.card.name} também sai da arena`, tone: 'bad' }
-          : { text: `${attacker.card.name} fica com força ${outcome.attackerAttack}`, tone: 'neutral' },
+          ? { text: fx.attackerLeaves(attacker.card.name), tone: 'bad' }
+          : { text: fx.attackerAttack(attacker.card.name, outcome.attackerAttack), tone: 'neutral' },
       )
     }
   }
@@ -613,33 +615,33 @@ function AttackSummary({ attacker, target, direct, opponentName, opponentLife, o
     <div className="board-dock-summary">
       <div className="board-attack-line">
         <span>
-          <span className="board-dock-label">Atacante</span>
+          <span className="board-dock-label">{t.board.attacker}</span>
           {attacker ? (
             <strong>
               {attacker.card.name} ({outcome?.power ?? attacker.attack})
             </strong>
           ) : (
-            <span className="is-action">Escolha na sua arena</span>
+            <span className="is-action">{t.board.pickInYourArena}</span>
           )}
         </span>
         <ArrowIcon size={20} />
         <span>
-          <span className="board-dock-label">Alvo</span>
+          <span className="board-dock-label">{t.board.target}</span>
           {direct ? (
-            <strong>Vida de {opponentName}</strong>
+            <strong>{t.board.lifeOf(opponentName)}</strong>
           ) : target ? (
             <strong>
               {target.card.name} ({outcome?.guard ?? target.resistance})
             </strong>
           ) : (
             <span className={attacker ? 'is-action' : 'is-muted'}>
-              {attacker ? 'Escolha na arena do oponente' : 'depois do atacante'}
+              {attacker ? t.board.pickInTheirArena : t.board.afterAttacker}
             </span>
           )}
         </span>
       </div>
       {effects.length > 0 && (
-        <ul className="board-effects" aria-label="Resultado do ataque">
+        <ul className="board-effects" aria-label={t.board.attackResult}>
           {effects.map((e) => (
             <li key={e.text} className={`is-${e.tone}`}>
               {e.text}
@@ -657,15 +659,16 @@ function ZoneLabel({ tone, children }: { tone?: 'action' | 'target'; children: R
 
 /** Open arena positions, so the 3-character limit is visible; `incoming` previews the picked card. */
 function EmptySlots({ count, incoming }: { count: number; incoming?: string }) {
+  const { t } = useI18n()
   return Array.from({ length: Math.max(0, count) }, (_, i) =>
     i === 0 && incoming !== undefined ? (
       <div key={i} className="board-slot is-incoming">
         <PlusIcon size={22} />
-        <span>{incoming ? `${incoming} entra aqui` : 'Sua carta entra aqui'}</span>
+        <span>{incoming ? t.board.incoming(incoming) : t.board.yourCardHere}</span>
       </div>
     ) : (
       <div key={i} className="board-slot">
-        Vaga livre
+        {t.board.freeSlot}
       </div>
     ),
   )
@@ -683,6 +686,7 @@ type PlayerBarProps = {
 }
 
 function PlayerBar({ name, initials, team, life, lifeLoss = 0, extra, status }: PlayerBarProps) {
+  const { t } = useI18n()
   const loss = Math.min(life, lifeLoss)
   return (
     <div className="board-player">
@@ -694,13 +698,13 @@ function PlayerBar({ name, initials, team, life, lifeLoss = 0, extra, status }: 
         </span>
       </div>
       <div className="board-life">
-        <HeartIcon /> <strong>{life}</strong> / {START_LIFE} vida
+        <HeartIcon /> <strong>{life}</strong> / {START_LIFE} {t.board.life}
       </div>
       <div className={`board-life-bar board-life-bar-${team}`} aria-hidden="true">
         <span style={{ width: `${((life - loss) / START_LIFE) * 100}%` }} />
         {loss > 0 && <span className="is-loss" style={{ width: `${(loss / START_LIFE) * 100}%` }} />}
       </div>
-      {loss > 0 && <span className="board-life-loss">Perderá {loss} de vida</span>}
+      {loss > 0 && <span className="board-life-loss">{t.board.willLose(loss)}</span>}
       <span className="board-extra">{extra}</span>
       {status && <span className={`board-status-chip is-${status.tone}`}>{status.label}</span>}
     </div>

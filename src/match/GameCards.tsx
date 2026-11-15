@@ -1,6 +1,6 @@
 import type { CharacterCard, StatModifier, SupportCard } from '../../shared/cards.ts'
 import { CheckIcon, ShieldIcon, SwordIcon } from './icons.tsx'
-import { CATEGORY_LABELS, STAT_LABELS } from './labels.ts'
+import { useI18n } from '../i18n/I18nContext.ts'
 import './GameCards.css'
 
 /**
@@ -28,26 +28,27 @@ export function CharacterCardView({
   tag,
   onSelect,
 }: CardProps) {
+  const { t } = useI18n()
   const atk = attack ?? card.attack
   const res = resistance ?? card.resistance
   const className = `game-card game-card-${card.team} is-${state}`
-  const label = `${card.name}, força ${atk}, resistência ${res}`
+  const label = t.cards.label(card.name, atk, res)
   const body = (
     <>
       <span className="game-card-frame">
         <span className="game-card-inner">
           <span className="game-card-art">
             <img src={card.image} alt="" loading="lazy" />
-            <span className="game-card-category">{CATEGORY_LABELS[card.category]}</span>
+            <span className="game-card-category">{t.categories[card.category]}</span>
           </span>
           <span className="game-card-name">{card.name}</span>
           <span className="game-card-stats">
-            <span className="game-card-stat is-atk" title="Força">
+            <span className="game-card-stat is-atk" title={t.statTitles.attack}>
               <SwordIcon size={12} />
               <strong className={statClass(atk, card.attack)}>{atk}</strong>
               {atk !== card.attack && <s>{card.attack}</s>}
             </span>
-            <span className="game-card-stat is-res" title="Resistência">
+            <span className="game-card-stat is-res" title={t.statTitles.resistance}>
               {res !== card.resistance && <s>{card.resistance}</s>}
               <strong className={statClass(res, card.resistance)}>{res}</strong>
               <ShieldIcon size={12} />
@@ -85,10 +86,13 @@ function statClass(current: number, base: number): string | undefined {
 }
 
 export function SupportCardView({ card, used, dim }: { card: SupportCard; used?: boolean; dim?: boolean }) {
+  const { t } = useI18n()
   return (
     <div className={`support-card support-card-${card.team}${used ? ' is-used' : dim ? ' is-dim' : ''}`}>
       <span className="support-card-inner">
-        <span className="support-card-kicker" title="Só pode ser usado uma vez por partida">Suporte · 1x</span>
+        <span className="support-card-kicker" title={t.cards.supportOnce}>
+          {t.cards.supportKicker}
+        </span>
         <span className="support-card-art">
           <img src={card.image} alt="" loading="lazy" />
         </span>
@@ -98,22 +102,23 @@ export function SupportCardView({ card, used, dim }: { card: SupportCard; used?:
           <Effect mod={card.penalty} />
         </span>
       </span>
-      {used && <span className="support-card-stamp">Usado</span>}
+      {used && <span className="support-card-stamp">{t.cards.used}</span>}
     </div>
   )
 }
 
 function Effect({ mod, up }: { mod: StatModifier; up?: boolean }) {
+  const { t } = useI18n()
   return (
     <span className={`support-effect ${up ? 'is-up' : 'is-down'}`}>
       <ArrowIcon up={up} />
       <span>
         <strong>
           {up ? '+' : '−'}
-          {mod.amount} {STAT_LABELS[mod.stat]}
+          {mod.amount} {t.stats[mod.stat]}
         </strong>
         <span>
-          {up ? 'Seus' : 'Rival'}: {CATEGORY_LABELS[mod.category]}
+          {up ? t.cards.yours : t.cards.rival}: {t.categories[mod.category]}
         </span>
       </span>
     </span>
