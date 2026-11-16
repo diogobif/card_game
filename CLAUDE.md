@@ -71,7 +71,7 @@ oxlint enforces `react/rules-of-hooks` (error) and `react/only-export-components
 - existem dois times, o time vermelho e o time azul, cada jogador deve escolher seu time, jogadores com mesmo time podem jogar uns contra os outros
 - o jogo vai consistir em um deck com 40 cartas de personagem, 20 cartas favorecendo cada lado, e 10 cartas de suporte, 5 favorecendo cada lado
 - as partidas vao acontecer em uma "arena" escolhida randomicamente, arenas podem ser neutras ou favorecer um lado, ao todo serao 5 arenas, uma neutra e 2 que favorecem um lado
-- a partida inicia com cada jogador recebendo 5 cartas de personagem aleatórias, uma carta de suporte e 20 pontos de vida
+- a partida inicia com cada jogador recebendo 5 cartas de personagem aleatórias, uma carta de suporte e 900 pontos de vida
 - cada carta de personagem tem um valor de forca que varia de 1 a 10, e uma pontuacao de resistencia que varia de 1 a 10 também, as cartas de suporte servem para adicionar mais poder ao seu personagem ou reduzir o poder do seu adversario
 - a cada turno cada jogador escolhe uma carta de personagem para o turno, os jogadores tem 1 minuto para escolher sua carta por turno
 - após escolher sua carta as cartas sao reveladas, a cada turno um jogador pode escolher qual personagem seu vai atacar o personagem do oponente, esse jogador muda a cada turno.

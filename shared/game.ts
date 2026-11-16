@@ -4,7 +4,7 @@ import type { Player } from './player.ts'
 export const HAND_SIZE = 5
 // A player with this many characters in the arena skips placing a card that turn.
 export const MAX_FIELD = 3
-export const START_LIFE = 20
+export const START_LIFE = 900
 export const TURN_TIME_MS = 60_000
 // After this many turns the player with more life wins.
 export const MAX_TURNS = 20
