@@ -47,7 +47,7 @@ afterEach(() => {
 })
 
 describe('createGame', () => {
-  it('deals 5 cards from the player own team deck, 20 life and one team support', () => {
+  it('deals 5 cards from the player own team deck, START_LIFE life and one team support', () => {
     game = start()
     for (const p of game.players) {
       expect(p.life).toBe(START_LIFE)
@@ -161,7 +161,7 @@ describe('attack phase', () => {
     expect(ana.field[0]).toMatchObject({ card: striker, attack: 5 })
     expect(bia.field).toEqual([])
     expect(bia.life).toBe(START_LIFE - 5)
-    expect(game.lastAttack).toMatchObject({ id: 1, power: 10, guard: 5, lifeDamage: 5, defenderLifeAfter: 15 })
+    expect(game.lastAttack).toMatchObject({ id: 1, power: 10, guard: 5, lifeDamage: 5, defenderLifeAfter: START_LIFE - 5 })
     expect(game.phase).toBe('choose')
     expect(game.turn).toBe(2)
   })
