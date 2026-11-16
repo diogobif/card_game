@@ -277,3 +277,58 @@ describe('viewFor', () => {
     expect(view.opponent).not.toHaveProperty('deck')
   })
 })
+
+// GET-4: players start the match with 900 life points.
+describe('GET-4: starting life points are 900', () => {
+  it('START_LIFE is 900', () => {
+    expect(START_LIFE).toBe(900)
+  })
+
+  it('both players start with 900 life, in the engine and in each player view', () => {
+    game = start()
+    expect(game.players.map((p) => p.life)).toEqual([900, 900])
+    for (const id of [ANA.id, BIA.id]) {
+      const view = viewFor(game, id)
+      expect(view.me.life).toBe(900)
+      expect(view.opponent.life).toBe(900)
+    }
+  })
+
+  it('every new match starts at 900, also between players of the same team', () => {
+    const red2: Player = { id: 'caio', name: 'Caio', team: 'red' }
+    game = start(undefined, [ANA, red2])
+    expect(game.players.map((p) => p.life)).toEqual([900, 900])
+  })
+
+  it('damage is subtracted from 900 and a hit that would have ended a 20-life match does not end it', () => {
+    const striker = card('red', 10, 2)
+    game = start({ ana: striker, bia: card('blue', 1, 5) })
+    playTurn(game)
+    game.players[1].field = []
+    // Two full-power hits would have emptied the old 20 life points.
+    attack(game, ANA.id, striker.id, null)
+    expect(game.players[1].life).toBe(890)
+    expect(game.lastAttack).toMatchObject({ lifeDamage: 10, defenderLifeAfter: 890 })
+    expect(viewFor(game, BIA.id).me.life).toBe(890)
+    expect(game.phase).not.toBe('over')
+    expect(game.result).toBeNull()
+  })
+
+  it('excess damage from a character attack is taken from 900', () => {
+    const striker = card('red', 10, 2)
+    const target = card('blue', 1, 5)
+    game = start({ ana: striker, bia: target })
+    playTurn(game)
+    attack(game, ANA.id, striker.id, target.id)
+    expect(game.players[1].life).toBe(895)
+  })
+
+  it('a match where nobody lost life is a draw at the turn limit (900 vs 900)', () => {
+    game = start()
+    playTurn(game)
+    game.turn = MAX_TURNS
+    vi.advanceTimersByTime(TURN_TIME_MS)
+    expect(game.players.map((p) => p.life)).toEqual([900, 900])
+    expect(game.result).toEqual({ winnerId: null, reason: 'turn-limit' })
+  })
+})
